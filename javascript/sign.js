@@ -60,16 +60,29 @@ loginForm.addEventListener("submit", (e) => {
   const email = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value;
 
-  auth
+  const admin = {
+    "id": "admin@gmail.com",
+    "password": "admin123"
+  }
+
+  if (email == admin.id && password == admin.password){
+    showMessage("Log In successful! Welcome Admin. ");
+    loginForm.reset();
+    window.location.href = "halamanadmin.html";
+  }else{
+    auth
     .signInWithEmailAndPassword(email, password)
     .then(() => {
-      showMessage("Sign In successful! Welcome back.");
+      showMessage(`Sign In successful! Welcome back ${email}.`);
       loginForm.reset();
       window.location.href = "halamanutama.html";
     })
     .catch((error) => {
       showMessage(error.message, true);
     });
+  }
+
+  
 });
 
 // Monitor auth state changes (optional)
