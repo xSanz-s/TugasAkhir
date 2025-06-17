@@ -29,7 +29,10 @@
 <body>
     <nav class="navbar navbar-expand-md shadow navbar-light bg-light sticky-top fw-bold">
         <div class="container-fluid mx-sm-5">
-            <a class="navbar-brand" href="#"><img src="" alt="" width="55px" /></a>
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="/resources/logo.jpg" alt="Logo" width="65" height="65" class="rounded" />
+                <span class="ms-2 fs-4 text-primary fw-bold">DonasiKu</span>
+            </a>
             <a href="#" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="true" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -98,7 +101,7 @@
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-        import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+        import { getDatabase, ref, onValue, get , set, remove } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
 
         // Konfigurasi Firebase (ganti dengan milik Anda)
         const firebaseConfig = {
@@ -182,7 +185,37 @@
         };
 
         window.onload = getDataRealTime;
+
+        // Fungsi validasi data (memindahkan ke node validasi)
+  window.validasiData = async function (key) {
+    if (confirm("Apakah Anda yakin ingin memvalidasi data ini?")) {
+      try {
+        // Ambil data dari laporan
+        const laporanRef = ref(database, "laporan/" + key);
+        const snapshot = await get(laporanRef);
+        
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          
+          // Pindahkan ke node validasi
+          const validRef = ref(database, "validasi/" + key);
+          await set(validRef, data);
+          
+          // Hapus dari node laporan
+          await remove(laporanRef);
+          
+          alert("Data telah divalidasi!");
+        } else {
+          alert("Data tidak ditemukan!");
+        }
+      } catch (error) {
+        alert("Gagal memvalidasi: " + error.message);
+      }
+    }
+  };
     </script>
+
+  
 </body>
 
 </html>

@@ -15,7 +15,10 @@
     <nav
       class="navbar navbar-expand-md shadow navbar-light bg-light sticky-top fw-bold">
       <div class="container-fluid mx-sm-5">
-        <a class="navbar-brand" href="#"><img src="" alt="" width="55px" /></a>
+        <a class="navbar-brand d-flex align-items-center" href="#">
+        <img src="/resources/logo.jpg" alt="Logo" width="65" height="65" class="rounded" />
+        <span class="ms-2 fs-4 text-primary fw-bold">DonasiKu</span>
+        </a>
         <a
           href="#"
           class="navbar-toggler"
@@ -106,5 +109,85 @@
       const peta = document.querySelector("#peta");
       document.querySelector("#btn-donasi").addEventListener("click");
     </script>
+
+    <script>
+  // Fungsi untuk mendapatkan parameter dari URL
+  function getUrlParameter(name) {
+    name = name.replace(/[\[\]]/g, '\\$&');
+    const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+    const results = regex.exec(window.location.search);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  }
+
+  // Fungsi untuk memuat data bencana berdasarkan ID
+  async function loadBencanaData(bencanaId) {
+    try {
+      // Inisialisasi Firebase
+      const firebaseConfig = {
+        apiKey: "AIzaSyD80y7jAbZB5fjxBuPfq3UpUU1NY8BT6JE",
+        authDomain: "tugasakhir-970f9.firebaseapp.com",
+        databaseURL: "https://tugasakhir-970f9-default-rtdb.firebaseio.com",
+        projectId: "tugasakhir-970f9",
+        storageBucket: "tugasakhir-970f9.firebasestorage.app",
+        messagingSenderId: "558954760051",
+        appId: "1:558954760051:web:35a97d43a3b5eafe2c6706"
+      };
+      
+      // Inisialisasi Firebase jika belum ada
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
+      
+      const database = firebase.database();
+      const bencanaRef = database.ref('validasi/' + bencanaId);
+      
+      const snapshot = await bencanaRef.once('value');
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        
+        // Update UI dengan data bencana
+        document.getElementById('namaBencana').textContent = data.namaBencana || 'Bantu Korban Bencana';
+        document.getElementById('danaTerkumpul').textContent = data.danaTerkumpul ? parseInt(data.danaTerkumpul).toLocaleString('id-ID') : '0';
+        document.getElementById('banyakDonatur').textContent = data.banyakDonatur || '0';
+        document.getElementById('tanggal').textContent = `Tanggal ${data.tanggal || '02 Juni 2025'}`;
+        
+        // Update gambar jika ada
+        const imgElement = document.querySelector('.bd-placeholder-img img');
+        if (data.foto) {
+          imgElement.src = data.foto;
+          imgElement.alt = data.namaBencana || 'Foto Bencana';
+        }
+        
+        // Update tombol donasi dengan ID bencana
+        const donasiBtn = document.getElementById('btn-donasi');
+        donasiBtn.href = `pembayaran.html?bencanaId=${bencanaId}&nama=${encodeURIComponent(data.namaBencana || 'Bencana')}`;
+      } else {
+        console.error('Data bencana tidak ditemukan');
+      }
+    } catch (error) {
+      console.error('Error loading bencana data:', error);
+    }
+  }
+
+  // Saat halaman dimuat
+  document.addEventListener('DOMContentLoaded', function() {
+    const bencanaId = getUrlParameter('id');
+    if (bencanaId) {
+      loadBencanaData(bencanaId);
+    }
+    
+    // Event listener untuk tombol donasi
+    document.getElementById('btn-donasi').addEventListener('click', function(e) {
+      e.preventDefault();
+      window.location.href = this.href;
+    });
+  });
+</script>
+
+<!-- Tambahkan Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
   </body>
 </html>

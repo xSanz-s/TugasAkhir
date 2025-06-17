@@ -1,119 +1,821 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-      crossorigin="anonymous" />
-    <title>Document</title>
-
-    <style>
-    nav.navbar {
-    background-color: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(8px);
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donasi Bencana - Midtrans & Firebase</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <style>
+    :root {
+      --primary: #0d6efd;
+      --secondary: #6c757d;
+      --success: #198754;
+      --warning: #ffc107;
+      --danger: #dc3545;
+      --light: #f8f9fa;
+      --dark: #212529;
     }
-    </style>
-  </head>
-  <body>
-    <!-- NavBar -->
-    <nav
-      class="navbar navbar-expand-md shadow navbar-light bg-transparent sticky-top fw-bold">
-      <div class="container-fluid mx-sm-5">
-        <a class="navbar-brand" href="#"><img src="" alt="" width="55px" /></a>
-        <a
-          href="#"
-          class="navbar-toggler"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="true"
-          aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </a>
-        <div
-          class="collapse navbar-collapse justify-content-end"
-          id="navbarNav">
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link" aria-current="page" href="halamanutama.html"
-                >Beranda</a
-              >
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#products">Korban Bencana</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="lapor.html">Lapor</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Kontak</a>
-            </li>
-            <li class="nav-item">
-              <a class="btn btn-outline-primary rounded fw-bold" href="#"
-                >login</a>
-            </li>
-          </ul>
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f0f8ff 0%, #e6f7ff 100%);
+      min-height: 100vh;
+      color: #333;
+    }
+    
+    .navbar-brand {
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+    }
+    
+    .hero-section {
+      background: linear-gradient(135deg, var(--primary) 0%, #0b5ed7 100%);
+      color: white;
+      padding: 80px 0 100px;
+      margin-bottom: -50px;
+      border-radius: 0 0 40px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hero-section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%230a58ca" fill-opacity="0.2" d="M0,160L48,181.3C96,203,192,245,288,234.7C384,224,480,160,576,138.7C672,117,768,139,864,165.3C960,192,1056,224,1152,213.3C1248,203,1344,149,1392,122.7L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+      background-size: cover;
+      background-position: bottom;
+    }
+    
+    .card {
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+      border: none;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .nominal-btn {
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+    
+    .nominal-btn.active {
+      background: var(--primary) !important;
+      color: white !important;
+      box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+    }
+    
+    .firebase-status {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 14px;
+      z-index: 1000;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+      display: flex;
+      align-items: center;
+    }
+    
+    .firebase-connected {
+      background: var(--success);
+      color: white;
+    }
+    
+    .firebase-disconnected {
+      background: var(--danger);
+      color: white;
+    }
+    
+    .donation-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      padding: 20px;
+      margin-bottom: 15px;
+      position: relative;
+    }
+    
+    .progress-container {
+      height: 10px;
+      background-color: #e9ecef;
+      border-radius: 5px;
+      overflow: hidden;
+      margin: 20px 0;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary) 0%, #0b5ed7 100%);
+      transition: width 0.8s ease;
+    }
+    
+    .btn-pay {
+      padding: 14px 32px;
+      font-size: 18px;
+      font-weight: 600;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-pay:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(13, 110, 253, 0.3);
+    }
+    
+    .success-container {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      text-align: center;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    
+    .floating {
+      animation: floating 3s ease-in-out infinite;
+    }
+    
+    @keyframes floating {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+    
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.4); }
+      70% { box-shadow: 0 0 0 15px rgba(13, 110, 253, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(13, 110, 253, 0); }
+    }
+    
+    .midtrans-logo {
+      max-width: 180px;
+      margin: 20px auto;
+      display: block;
+    }
+    
+    .form-control, .form-select {
+      border-radius: 10px;
+      padding: 12px 15px;
+      border: 2px solid #e9ecef;
+      transition: all 0.3s ease;
+    }
+    
+    .form-control:focus, .form-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+    }
+    
+    footer {
+      background: linear-gradient(135deg, #343a40 0%, #212529 100%);
+      color: white;
+      padding: 40px 0 20px;
+      margin-top: 60px;
+    }
+    
+    .impact-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    
+    .dev-warning {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #ff6b6b;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      z-index: 2000;
+      font-weight: bold;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+    }
+    
+    .dev-alert {
+      background: rgba(255, 107, 107, 0.2);
+      border-left: 4px solid #ff6b6b;
+      padding: 15px;
+      border-radius: 4px;
+      margin: 20px 0;
+    }
+    
+    @media (max-width: 768px) {
+      .hero-section {
+        padding: 60px 0 80px;
+      }
+      
+      .btn-pay {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Development Warning -->
+  <div class="dev-warning">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    MODE PENGEMBANGAN: Ini hanya untuk testing. Jangan gunakan di produksi!
+  </div>
+  
+  <!-- Firebase Status Indicator -->
+  <div id="firebaseStatus" class="firebase-status firebase-disconnected">
+    <i class="bi bi-database me-2"></i> Firebase: Disconnected
+  </div>
+  
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 sticky-top shadow-sm">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <div class="bg-primary rounded-circle p-2 me-2">
+          <i class="bi bi-heart-fill text-white"></i>
+        </div>
+        <span class="text-primary fw-bold">DonasiBencana</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link active fw-medium" href="#"><i class="bi bi-house-door me-1"></i> Beranda</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link fw-medium" href="#"><i class="bi bi-exclamation-triangle me-1"></i> Bencana</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link fw-medium" href="#"><i class="bi bi-megaphone me-1"></i> Lapor</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link fw-medium" href="#"><i class="bi bi-telephone me-1"></i> Kontak</a>
+          </li>
+          <li class="nav-item ms-lg-3">
+            <a class="btn btn-outline-primary rounded-pill px-4" href="#"><i class="bi bi-box-arrow-in-right me-1"></i> Login</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-section text-center">
+    <div class="container position-relative">
+      <h1 class="display-4 fw-bold mb-3">Bantu Korban Bencana Alam</h1>
+      <p class="lead mb-4">Donasi Anda memberikan harapan dan bantuan penting bagi mereka yang membutuhkan</p>
+      <div class="d-flex justify-content-center">
+        <div class="bg-white text-primary p-3 rounded-pill d-inline-flex align-items-center shadow-sm">
+          <i class="bi bi-coin me-2"></i>
+          <div class="fw-bold me-2">Total Donasi:</div>
+          <div id="totalDonations" class="fw-bold">Rp 0</div>
         </div>
       </div>
-    </nav>
-
-    <h1 class="h1 text-center mt-5">Pilih Nominal</h1>
-    <div class="container d-flex justify-content-center">
-        <ul class="d-flex gap-2 flex-wrap">
-            <button id = "pilih" class = 'btn btn-outline-primary rounded'>Rp.10.000</button>
-            <button id = "pilih" class = 'btn btn-outline-primary rounded'>Rp.20.000</button>
-            <button id = "pilih" class = 'btn btn-outline-primary rounded'>Rp.50.000</button>
-            <button id = "pilih" class = 'btn btn-outline-primary rounded'>Rp.100.000</button>
-        </ul>
     </div>
+  </section>
 
-    <div class="container bg-light py-5">
-        <form id="laporForm" class="py-5">
-
-            <div class="mb-3 row">
-                <label class="col-sm-3 col-form-label" for="nama"><b>Nama</b></label>
-                <div class="col-sm-9">
-                    <input type="text" name="nama" id="nama" class="form-control" placeholder="Nama">
+  <!-- Main Content -->
+  <main class="container my-5">
+    <div class="row g-4">
+      <!-- Donation Form -->
+      <div class="col-lg-7">
+        <div class="card border-0">
+          <div class="card-body p-4 p-md-5">
+            <div class="text-center mb-4">
+              <h2 class="fw-bold text-primary">Buat Donasi</h2>
+              <p class="text-muted">Pilih nominal dan isi data diri Anda</p>
+            </div>
+            
+            <div class="dev-alert">
+              <i class="bi bi-info-circle me-2"></i> Mode Pengembangan: Token pembayaran dibuat di frontend. 
+              Untuk produksi, gunakan backend untuk keamanan.
+            </div>
+            
+            <div class="mb-4">
+              <h5 class="mb-3 fw-semibold">Pilih Nominal Donasi</h5>
+              <div class="d-flex flex-wrap gap-2 justify-content-center">
+                <button class="btn btn-outline-primary rounded-pill px-4 py-2 nominal-btn" data-amount="10000">Rp 10.000</button>
+                <button class="btn btn-outline-primary rounded-pill px-4 py-2 nominal-btn" data-amount="20000">Rp 20.000</button>
+                <button class="btn btn-outline-primary rounded-pill px-4 py-2 nominal-btn" data-amount="50000">Rp 50.000</button>
+                <button class="btn btn-outline-primary rounded-pill px-4 py-2 nominal-btn" data-amount="100000">Rp 100.000</button>
+              </div>
+            </div>
+            
+            <div class="text-center my-4 py-2">
+              <h4>Nominal Dipilih: <span id="displayAmount" class="text-primary fw-bold">Rp 0</span></h4>
+            </div>
+            
+            <form id="donationForm">
+              <div class="mb-4">
+                <label for="nama" class="form-label fw-semibold">Nama Lengkap</label>
+                <input type="text" class="form-control form-control-lg" id="nama" placeholder="Masukkan nama lengkap" required>
+              </div>
+              
+              <div class="mb-4">
+                <label for="email" class="form-label fw-semibold">Email</label>
+                <input type="email" class="form-control form-control-lg" id="email" placeholder="contoh@email.com" required>
+              </div>
+              
+              <div class="mb-4">
+                <label for="phone" class="form-label fw-semibold">Nomor Telepon</label>
+                <input type="tel" class="form-control form-control-lg" id="phone" placeholder="0812-3456-7890">
+              </div>
+              
+              <div class="mb-4">
+                <label for="pesan" class="form-label fw-semibold">Pesan Dukungan</label>
+                <textarea class="form-control" id="pesan" rows="3" placeholder="Tulis pesan penyemangat untuk korban bencana"></textarea>
+              </div>
+              
+              <input type="hidden" id="selectedAmount" name="amount" value="0">
+              
+              <div class="d-grid mt-4 pt-2">
+                <button type="submit" class="btn btn-primary btn-lg btn-pay pulse" id="payButton">
+                  <span id="buttonText">Lanjutkan Pembayaran</span>
+                  <span id="buttonSpinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status"></span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Recent Donations & Progress -->
+      <div class="col-lg-5">
+        <div class="card border-0 h-100">
+          <div class="card-body p-4 p-md-5">
+            <h3 class="card-title mb-4 fw-semibold">Donasi Terbaru</h3>
+            <div id="recentDonations" class="mb-4">
+              <div class="text-center py-4">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="mt-3">Memuat data donasi...</p>
+              </div>
+            </div>
+            
+            <div class="card border-0 bg-light mt-4">
+              <div class="card-body">
+                <h3 class="card-title mb-3 fw-semibold">Progress Donasi</h3>
+                <div class="d-flex justify-content-between mb-2">
+                  <span>Terkumpul</span>
+                  <span id="progressAmount" class="fw-semibold">Rp 0</span>
                 </div>
-            </div>
-
-            <div class="mb-3 row">
-                <label class="col-sm-3 col-form-label" for="nama"><b>Email</b></label>
-                <div class="col-sm-9">
-                    <input type="email" name="email" id="email" class="form-control" placeholder="user@gmail.com">
+                <div class="progress-container">
+                  <div id="progressBar" class="progress-bar" style="width: 0%"></div>
                 </div>
-            </div>
-
-            <div class="mb-3 row">
-                <label class="col-sm-3 col-form-label" for="nama"><b>Pesan</b></label>
-                <div class="col-sm-9">
-                     <textarea name="Komentar" cols="46" rows="6"></textarea>
+                <div class="text-center mt-2">
+                  <small>Tujuan: <span id="targetAmount" class="fw-semibold">Rp 50.000.000</span></small>
                 </div>
+              </div>
             </div>
-           
-
-            <div class="d-flex justify-content-center">
-                <button type="submit" class="btn btn-primary" id="bayar">Bayar</button>
+            
+            <!-- Impact Stats -->
+            <div class="mt-5">
+              <h4 class="fw-semibold mb-4">Dampak Donasi Anda</h4>
+              <div class="row text-center">
+                <div class="col-4">
+                  <div class="impact-number">150+</div>
+                  <div class="text-muted small">Keluarga</div>
+                </div>
+                <div class="col-4">
+                  <div class="impact-number">25</div>
+                  <div class="text-muted small">Lokasi</div>
+                </div>
+                <div class="col-4">
+                  <div class="impact-number">8</div>
+                  <div class="text-muted small">Bencana</div>
+                </div>
+              </div>
             </div>
-        </form>
+          </div>
+        </div>
+      </div>
     </div>
+  </main>
+
+  <!-- Midtrans Payment Modal -->
+  <div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Pembayaran Donasi</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="text-center">
+            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%230d6efd' d='M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z'/></svg>" 
+                 width="80" height="80" class="floating mb-3">
+            <h4 class="mb-3">Proses Pembayaran</h4>
+            <p>Anda akan diarahkan ke halaman pembayaran Midtrans</p>
+            <div class="alert alert-info">
+              <i class="bi bi-info-circle me-2"></i> Untuk testing, gunakan kartu kredit sandbox: 
+              <strong>4811 1111 1111 1114</strong>, CVV: <strong>123</strong>, Exp: Masa depan
+            </div>
+            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 512'><path fill='%230d6efd' d='M623.2 192c-51.8 3.5-125.7 54.7-163.1 71.5-29.1 13.1-54.2 24.4-76.1 24.4-22.6 0-26-16.2-21.3-51.9 1.1-8 11.7-79.2-42.7-76.1-25.1 1.5-64.3 24.8-169.5 126L192 182.2c30.4-75.9-53.2-151.5-129.7-102.8L7.4 116.3C0 121-2.2 130.9 2.5 138.4l17.2 27.4c4.7 7.5 14.6 9.7 22.1 4.9l58-38.9c18.4-11.7 40.7 7.2 32.7 27.1L34.3 404.1C27.5 421 37 448 64 448c8.3 0 16.5-3.2 22.6-9.4 42.2-42.2 154.7-150.7 211.2-195.8-2.2 28.5-2.1 58.9 20.6 83.8 15.3 16.8 37.3 25.3 65.5 25.3 35.6 0 68-14.6 102.3-30 33-14.8 99-62.6 150.9-65.8 8.5-.5 15.2-7.5 15.1-16.1l-.6-54.6c-.1-8.6-7.1-15.5-15.7-15.5z'/></svg>" 
+                 alt="Midtrans" class="midtrans-logo">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 mb-4">
+          <h5 class="fw-bold">DonasiBencana</h5>
+          <p class="mt-3">Platform donasi untuk membantu korban bencana alam di seluruh Indonesia.</p>
+          <div class="d-flex gap-3 mt-4">
+            <a href="#" class="text-white"><i class="bi bi-facebook fs-5"></i></a>
+            <a href="#" class="text-white"><i class="bi bi-twitter fs-5"></i></a>
+            <a href="#" class="text-white"><i class="bi bi-instagram fs-5"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+          <h5 class="fw-bold">Kontak Kami</h5>
+          <ul class="list-unstyled mt-3">
+            <li class="mb-2"><i class="bi bi-envelope me-2"></i> support@donasibencana.id</li>
+            <li class="mb-2"><i class="bi bi-telephone me-2"></i> (021) 1234-5678</li>
+            <li class="mb-2"><i class="bi bi-geo-alt me-2"></i> Jakarta, Indonesia</li>
+          </ul>
+        </div>
+        <div class="col-lg-4 mb-4">
+          <h5 class="fw-bold">Tentang Kami</h5>
+          <p class="mt-3">Kami adalah platform donasi yang berkomitmen untuk membantu korban bencana alam dengan transparansi dan akuntabilitas.</p>
+        </div>
+      </div>
+      <hr class="my-4 bg-light">
+      <div class="text-center">
+        <p class="mb-0">© 2023 DonasiBencana. Hak Cipta Dilindungi.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="SB-Mid-client-hE_JoUIl7lzzo4Bm"></script>
+  
+  <script>
+    // Konfigurasi Firebase (Ganti dengan konfigurasi Anda)
+    const firebaseConfig = {
+      apiKey: "AIzaSyD80y7jAbZB5fjxBuPfq3UpUU1NY8BT6JE",
+      authDomain: "tugasakhir-970f9.firebaseapp.com",
+      databaseURL: "https://tugasakhir-970f9-default-rtdb.firebaseio.com",
+      projectId: "tugasakhir-970f9",
+      storageBucket: "tugasakhir-970f9.firebasestorage.app",
+      messagingSenderId: "558954760051",
+      appId: "1:558954760051:web:35a97d43a3b5eafe2c6706"
+};
+
+    // Inisialisasi Firebase
+    try {
+      firebase.initializeApp(firebaseConfig);
+    } catch (error) {
+      console.error("Firebase initialization error", error);
+    }
     
-    <script>
-        const bayar = document.getElementById('bayar')
+    const database = firebase.database();
+    
+    // Update status koneksi Firebase
+    const statusElement = document.getElementById('firebaseStatus');
+    if (database) {
+      database.ref('.info/connected').on('value', (snapshot) => {
+        if (snapshot.val() === true) {
+          statusElement.innerHTML = '<i class="bi bi-database me-2"></i> Firebase: Connected';
+          statusElement.className = "firebase-status firebase-connected";
+        } else {
+          statusElement.innerHTML = '<i class="bi bi-database me-2"></i> Firebase: Disconnected';
+          statusElement.className = "firebase-status firebase-disconnected";
+        }
+      });
+    } else {
+      statusElement.innerHTML = '<i class="bi bi-database me-2"></i> Firebase: Initialization Failed';
+      statusElement.className = "firebase-status firebase-disconnected";
+    }
+    
+    // Variabel global
+    let selectedAmount = 0;
+    let totalDonations = 0;
+    const DONATION_TARGET = 50000000;
+    let newDonationRef = null;
+    
+    // Referensi Firebase
+    const donationsRef = database ? database.ref('donations') : null;
+    
+    // Fungsi untuk memformat mata uang
+    function formatCurrency(amount) {
+      return 'Rp ' + amount.toLocaleString('id-ID');
+    }
+    
+    // Update total donasi dan progress bar
+    function updateDonationProgress() {
+      document.getElementById('totalDonations').textContent = formatCurrency(totalDonations);
+      document.getElementById('progressAmount').textContent = formatCurrency(totalDonations);
+      
+      const progressPercentage = Math.min(100, (totalDonations / DONATION_TARGET) * 100);
+      document.getElementById('progressBar').style.width = `${progressPercentage}%`;
+      document.getElementById('targetAmount').textContent = formatCurrency(DONATION_TARGET);
+    }
+    
+    // Load data donasi jika Firebase tersedia
+    if (donationsRef) {
+      // Update total donasi
+      donationsRef.on('value', (snapshot) => {
+        totalDonations = 0;
+        const donations = snapshot.val();
+        
+        if (donations) {
+          Object.values(donations).forEach(donation => {
+            if (donation.status === 'success') {
+              totalDonations += donation.amount || 0;
+            }
+          });
+        }
+        
+        updateDonationProgress();
+      });
+      
+      // Tampilkan donasi terbaru
+      donationsRef.limitToLast(5).on('value', (snapshot) => {
+        const donations = snapshot.val();
+        const donationsContainer = document.getElementById('recentDonations');
+        
+        if (!donations) {
+          donationsContainer.innerHTML = '<div class="text-center py-3 text-secondary">Belum ada donasi</div>';
+          return;
+        }
+        
+        let html = '';
+        Object.keys(donations).reverse().forEach(key => {
+          const donation = donations[key];
+          
+          // Format waktu
+          const date = new Date(donation.timestamp);
+          const formattedDate = date.toLocaleDateString('id-ID', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+          
+          // Tentukan warna badge berdasarkan status
+          let badgeClass = 'bg-secondary';
+          if (donation.status === 'success') badgeClass = 'bg-success';
+          else if (donation.status === 'pending') badgeClass = 'bg-warning text-dark';
+          else if (donation.status === 'failed') badgeClass = 'bg-danger';
+          
+          html += `
+            <div class="donation-card position-relative">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <h5 class="mb-0">${donation.name || 'Anonim'}</h5>
+                  <small class="text-muted">${formattedDate}</small>
+                </div>
+                <span class="badge ${badgeClass} rounded-pill">${donation.status}</span>
+              </div>
+              <div class="mt-2 fw-bold">${formatCurrency(donation.amount || 0)}</div>
+              ${donation.message ? `<div class="mt-2">"${donation.message}"</div>` : ''}
+            </div>
+          `;
+        });
+        
+        donationsContainer.innerHTML = html;
+      });
+    } else {
+      document.getElementById('recentDonations').innerHTML = '<div class="alert alert-danger">Koneksi Firebase gagal. Silakan refresh halaman.</div>';
+    }
+    
+    // Handler untuk tombol nominal
+    const nominalButtons = document.querySelectorAll('.nominal-btn');
+    const displayAmount = document.getElementById('displayAmount');
+    
+    nominalButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        // Reset semua tombol
+        nominalButtons.forEach(btn => {
+          btn.classList.remove('active', 'btn-primary');
+          btn.classList.add('btn-outline-primary');
+        });
+        
+        // Aktifkan tombol yang dipilih
+        this.classList.remove('btn-outline-primary');
+        this.classList.add('active', 'btn-primary');
+        
+        // Simpan nilai nominal
+        selectedAmount = parseInt(this.getAttribute('data-amount'));
+        document.getElementById('selectedAmount').value = selectedAmount;
+        
+        // Update tampilan
+        displayAmount.textContent = formatCurrency(selectedAmount);
+      });
+    });
 
-        bayar.addEventListener('click', function() {
-            window.alert('sukses')
-        })
+    // Handler form submit
+    document.getElementById('donationForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      // Validasi nominal
+      if (selectedAmount === 0) {
+        alert('Silakan pilih nominal donasi terlebih dahulu');
+        return;
+      }
+      
+      // Dapatkan data form
+      const name = document.getElementById('nama').value;
+      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
+      const message = document.getElementById('pesan').value;
+      
+      // Tampilkan loading
+      togglePaymentButton(true);
+      
+      // Tampilkan modal pembayaran
+      const paymentModal = new bootstrap.Modal(document.getElementById('paymentModal'));
+      paymentModal.show();
+      
+      // Generate unique order ID
+      const orderId = 'DONASI-' + new Date().getTime();
+      
+      try {
+        // Simpan data transaksi ke Firebase sebagai "pending"
+        if (donationsRef) {
+          newDonationRef = donationsRef.push();
+          await newDonationRef.set({
+            id: orderId,
+            name: name,
+            email: email,
+            phone: phone,
+            message: message,
+            amount: selectedAmount,
+            status: 'pending',
+            timestamp: new Date().toISOString()
+          });
+          
+          // ===========================================
+          // DEVELOPMENT ONLY: Frontend Token Generation
+          // Hanya untuk pengembangan, tidak untuk produksi
+          // ===========================================
+          
+          // Siapkan data transaksi
+          const transactionData = {
+            transaction_details: {
+              order_id: orderId,
+              gross_amount: selectedAmount
+            },
+            customer_details: {
+              first_name: name.split(' ')[0] || name,
+              last_name: name.split(' ')[1] || '',
+              email: email,
+              phone: phone
+            },
+            item_details: [
+              {
+                id: 'DONASI001',
+                price: selectedAmount,
+                quantity: 1,
+                name: 'Donasi Bencana Alam',
+                category: 'donation'
+              }
+            ],
+            credit_card: {
+              secure: true // Aktifkan 3D Secure
+            }
+          };
 
-        const pilih = document.getElementById('pilih')
-        pilih.addEventListener('click', function(e){
-          e.preventDefault()
-          pilih.classList.remove('btn-outline-primaery')
-          pilih.classList.add('btn-primary')
-        })
-    </script>
+          // Membuat token langsung dari frontend (hanya untuk development)
+          const token = await window.snap.createTransactionToken(transactionData);
+          
+          console.log('Generated Token (Dev Mode):', token);
+          
+          // Tampilkan popup pembayaran Midtrans dengan token
+          window.snap.pay(token, {
+            onSuccess: function(result) {
+              console.log('Payment success', result);
+              // Update status di Firebase
+              updateDonationStatus('success', result);
+              showSuccessMessage(name, selectedAmount);
+              paymentModal.hide();
+            },
+            onPending: function(result) {
+              console.log('Payment pending', result);
+              // Update status di Firebase
+              updateDonationStatus('pending', result);
+              alert('Silakan selesaikan pembayaran Anda. Kami akan mengirimkan email konfirmasi setelah pembayaran berhasil.');
+              paymentModal.hide();
+              resetPaymentButton();
+            },
+            onError: function(result) {
+              console.log('Payment error', result);
+              // Update status di Firebase
+              updateDonationStatus('failed', result);
+              alert('Pembayaran gagal. Silakan coba lagi atau gunakan metode pembayaran lain.');
+              paymentModal.hide();
+              resetPaymentButton();
+            },
+            onClose: function() {
+              console.log('Popup ditutup tanpa pembayaran');
+              paymentModal.hide();
+              resetPaymentButton();
+            }
+          });
+          
+        } else {
+          throw new Error('Firebase not available');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan: ' + error.message);
+        resetPaymentButton();
+        paymentModal.hide();
+      }
+    });
+    
+    // Fungsi untuk update status donasi di Firebase
+    async function updateDonationStatus(status, result) {
+      if (!newDonationRef) return;
+      
+      const updateData = {
+        status: status,
+        payment_method: result.payment_type || null,
+        transaction_id: result.transaction_id || null,
+        settlement_time: result.settlement_time || null,
+        updated_at: new Date().toISOString()
+      };
+      
+      try {
+        await newDonationRef.update(updateData);
+        console.log('Status updated in Firebase');
+      } catch (error) {
+        console.error('Failed to update Firebase:', error);
+      }
+    }
+    
+    // Fungsi untuk toggle loading button
+    function togglePaymentButton(isLoading) {
+      const button = document.getElementById('payButton');
+      const spinner = document.getElementById('buttonSpinner');
+      
+      button.disabled = isLoading;
+      spinner.classList.toggle('d-none', !isLoading);
+      document.getElementById('buttonText').textContent = 
+        isLoading ? 'Memproses...' : 'Lanjutkan Pembayaran';
+    }
+    
+    // Fungsi untuk reset tombol pembayaran
+    function resetPaymentButton() {
+      const button = document.getElementById('payButton');
+      const spinner = document.getElementById('buttonSpinner');
+      
+      if (button && spinner) {
+        button.disabled = false;
+        spinner.classList.add('d-none');
+        document.getElementById('buttonText').textContent = 'Lanjutkan Pembayaran';
+      }
+    }
+    
+    // Fungsi untuk menampilkan pesan sukses
+    function showSuccessMessage(name, amount) {
+      const donationForm = document.getElementById('donationForm');
+      if (!donationForm) return;
+      
+      donationForm.innerHTML = `
+        <div class="success-container">
+          <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="#28a745" class="bi bi-check-circle-fill mb-4" viewBox="0 0 16 16">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+          </svg>
+          <h2 class="text-success mb-3">Terima Kasih, ${name}!</h2>
+          <p class="lead">Donasi sebesar <strong>${formatCurrency(amount)}</strong> berhasil diproses.</p>
+          <p class="mb-4">Kami telah mengirimkan email konfirmasi ke <strong>${document.getElementById('email').value}</strong>.</p>
+          <div class="d-grid gap-2">
+            <button onclick="window.location.reload()" class="btn btn-primary">Buat Donasi Lagi</button>
+            <a href="#" class="btn btn-outline-primary">Lihat Detail Transaksi</a>
+          </div>
+        </div>
+      `;
+    }
+    
+    // Inisialisasi progress bar
+    updateDonationProgress();
+    
+    // Set default amount
+    nominalButtons[0].click();
+  </script>
 </body>
 </html>
