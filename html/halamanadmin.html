@@ -3,103 +3,410 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Halaman Admin</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <style>
+    :root {
+      --main-bg: #ffffff;
+      --accent-color: #4cc9f0;
+      --text-color: #212529;
+      --input-bg: #f8f9fa;
+      --input-border: #4cc9f0;
+      --map-border-radius: 12px;
+      --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background: var(--main-bg);
+      color: var(--text-color);
+      min-height: 100vh;
+      margin: 0;
+      padding-bottom: 60px;
+    }
+
+    /* Header navbar handled by Bootstrap */
+
+    main.container {
+      max-width: 900px;
+      margin-top: 40px;
+      margin-bottom: 40px;
+    }
+
+    h2,
+    h3 {
+      color: var(--accent-color);
+      font-weight: 700;
+    }
+
+    form {
+      margin-bottom: 3rem;
+    }
+
+    /* Map and chart container */
+    #interactive-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    #map {
+      flex: 1 1 430px;
+      height: 400px;
+      border-radius: var(--map-border-radius);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    #chart-container {
+      flex: 1 1 430px;
+      background: transparent;
+      border-radius: var(--map-border-radius);
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    #barChart {
+      width: 100% !important;
+      height: 350px !important;
+    }
+
+    @media (max-width: 940px) {
+      #interactive-section {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      #map,
+      #chart-container {
+        flex: none;
+        width: 100%;
+        max-width: 600px;
+        height: 350px;
+      }
+
+      #barChart {
+        height: 300px !important;
+      }
+    }
+  </style>
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-md shadow navbar-light bg-light sticky-top fw-bold">
-    <div class="container-fluid mx-sm-5">
-      <a class="navbar-brand" href="#"><img src="" alt="" width="55px" /></a>
-      <a href="#" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav"
-        aria-expanded="true" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm sticky-top fw-semibold">
+    <div class="container mx-sm-5">
+      <a class="navbar-brand d-flex align-items-center" href="#">
+        <img src="/resources/logo.jpg" alt="Logo" width="65" height="65" class="rounded" />
+        <span class="ms-2 fs-4 text-primary fw-bold">DonasiKu</span>
       </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav">
+        <ul class="navbar-nav align-items-center gap-3">
           <li class="nav-item">
             <a class="nav-link" aria-current="page" href="halamanutama.html">Beranda</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#products">Korban Bencana</a>
+            <a class="nav-link" href="#korban">Korban Bencana</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="formulir.html">Lapor</a>
+            <a class="nav-link" href="halamanadmin.html">Input Bencana</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Kontak</a>
+            <a class="nav-link" href="#kontak">Kontak</a>
+          </li>
+          <li class="nav-item d-none" id="currentUserContainer">
+            <p class="nav-link text-primary mb-0" id="currentUser"></p>
+          </li>
+          <li class="nav-item d-none" id="logoutContainer">
+            <button class="btn btn-outline-danger rounded-pill fw-bold px-4" id="logout">Log Out</button>
           </li>
           <li class="nav-item">
-            <a class="btn btn-outline-primary rounded fw-bold" href="sign.html" id="login">Log In</a>
-          </li>
-          <li class="nav-item">
-            <p class="nav-link text-primary d-none" id="currentUser"></p>
-          </li>
-          <li class="nav-item">
-            <p class="btn btn-outline-danger rounded fw-bold d-none" id="logout">
-              Log Out
-            </p>
+            <a class="btn btn-outline-primary rounded-pill fw-bold px-4" href="sign.html" id="login">Log In</a>
           </li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <main class="admin-section text-center">
-    <h2 class="mb-4">Halaman Utama Admin</h2>
-    <div class="container mt-5 bg-light text-dark rounded shadow-lg">
-      <h1 class="text-center">Input Data</h1>
-      <form class="py-5">
-        <div class="mb-3 row">
-          <label class="col-sm-3 col-form-label" for="nama"><b>Tanggal</b></label>
+  <!-- Main Admin Section -->
+  <main class="container">
+
+    <div class="bg-white rounded-4 shadow-sm p-4">
+      <h3 class="text-center mb-4">Input Data</h3>
+      <form>
+        <div class="mb-3 row align-items-center">
+          <label for="tanggal" class="col-sm-3 col-form-label fw-semibold">Tanggal</label>
           <div class="col-sm-9">
-            <input type="date" name="tanggal" id="tanggal" class="form-control">
+            <input type="date" id="tanggal" name="tanggal" class="form-control" required />
           </div>
         </div>
 
-        <div class="mb-3 row">
-          <label class="col-sm-3 col-form-label" for="nama"><b>Jenis Bencana</b></label>
+        <div class="mb-3 row align-items-center">
+          <label for="jenisBencana" class="col-sm-3 col-form-label fw-semibold">Jenis Bencana</label>
           <div class="col-sm-9">
-            <input type="text" name="jenisBencana" id="jenisBencana" class="form-control" placeholder="Jenis Bencana">
-          </div>
-        </div>
-        <div class="mb-3 row">
-          <label class="col-sm-3 col-form-label" for="nama"><b>Lokasi Bencana</b></label>
-          <div class="col-sm-9">
-            <input type="text" name="lokasi" id="lokasi" class="form-control" placeholder="Lokasi Bencana">
+            <input type="text" id="jenisBencana" name="jenisBencana" class="form-control" placeholder="Jenis Bencana"
+              required />
           </div>
         </div>
 
-        <div class="mb-3 row">
-          <label class="col-sm-3 col-form-label" for="nama"><b>Target Donasi</b></label>
+        <div class="mb-3 row align-items-center">
+          <label for="lokasi" class="col-sm-3 col-form-label fw-semibold">Lokasi Bencana</label>
           <div class="col-sm-9">
-            <input type="number" name="target" id="target" class="form-control"
-              placeholder="Masukkan Nominal tanpa titik">
+            <input type="text" id="lokasi" name="lokasi" class="form-control" placeholder="Lokasi Bencana" required />
           </div>
         </div>
 
-        <div class="mb-3 row">
-          <label class="col-sm-3 col-form-label" for="nama"><b>Bukti Foto</b></label>
+        <div class="mb-3 row align-items-center">
+          <label for="target" class="col-sm-3 col-form-label fw-semibold">Target Donasi</label>
           <div class="col-sm-9">
-            <input type="file" name="nama" id="nama" class="form-control">
+            <input type="number" id="target" name="target" class="form-control" placeholder="Masukkan Nominal tanpa titik"
+              min="0" required />
           </div>
         </div>
-        <a href="#" class="btn btn-primary mt-3">Kirim Laporan</a>
+
+        <div class="text-center">
+          <button type="submit" class="btn btn-primary rounded-pill px-5 fw-semibold">Kirim Laporan</button>
+        </div>
       </form>
     </div>
-    <div class="container mt-5 bg-light text-white shadow-lg">
-      <a href="monitoring.html" class="btn btn-primary admin-button w-100">Monitoring</a>
+
+    <!-- Interactive Map & Chart Section -->
+    <section id="interactive-section" class="mt-5">
+      <div id="map"></div>
+      <div id="chart-container">
+        <canvas id="barChart"></canvas>
+      </div>
+    </section>
+
+    <!-- Navigation Buttons -->
+    <div class="d-flex justify-content-between mt-5 gap-3">
+      <a href="laporan.html" class="btn btn-primary flex-fill rounded-pill fw-semibold">Laporan</a>
+      <a href="validasi.html" class="btn btn-primary flex-fill rounded-pill fw-semibold">Validasi Data</a>
     </div>
-    <div class="container mt-5 bg-light text-white shadow-lg">
-      <a href="laporan.html" class="btn btn-primary admin-button w-25">Laporan</a>
-      <a href="validasi.html" class="btn btn-primary admin-button w-25">Validasi Data</a>
-    </div>
+
   </main>
-  <footer id="kontak" class="bg-dark text-white text-center p-4 mt-5">
-    <p class="mb-0">Hak Cipta &copy;2025 DonasiKu.</p>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-white py-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 mb-4 mb-lg-0">
+          <h3 class="h5 fw-bold mb-3">
+            <i class="bi bi-heart-pulse-fill me-2"></i>DonasiKu
+          </h3>
+          <p>Platform donasi terpercaya untuk membantu korban bencana di seluruh Indonesia.</p>
+          <div class="d-flex gap-3">
+            <a href="#" class="text-white"><i class="bi bi-facebook fs-4"></i></a>
+            <a href="#" class="text-white"><i class="bi bi-twitter fs-4"></i></a>
+            <a href="#" class="text-white"><i class="bi bi-instagram fs-4"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+          <h4 class="h6 fw-bold mb-3">Tautan Cepat</h4>
+          <ul class="list-unstyled">
+            <li class="mb-2"><a href="#" class="text-white text-decoration-none">Beranda</a></li>
+            <li class="mb-2"><a href="#bencana" class="text-white text-decoration-none">Bencana</a></li>
+            <li class="mb-2"><a href="formulir.html" class="text-white text-decoration-none">Lapor Bencana</a></li>
+            <li class="mb-2"><a href="#tentang" class="text-white text-decoration-none">Tentang Kami</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-3 col-md-4 mb-4 mb-md-0">
+          <h4 class="h6 fw-bold mb-3" id="kontak">Kontak Kami</h4>
+          <ul class="list-unstyled">
+            <li class="mb-2"><i class="bi bi-envelope-fill me-2"></i> info@donasiku.org</li>
+            <li class="mb-2"><i class="bi bi-telephone-fill me-2"></i> (021) 1234-5678</li>
+            <li><i class="bi bi-geo-alt-fill me-2"></i> Jakarta, Indonesia</li>
+          </ul>
+        </div>
+        <div class="col-lg-3 col-md-4">
+          <h4 class="h6 fw-bold mb-3">Newsletter</h4>
+          <p>Dapatkan update terbaru tentang bencana dan kegiatan kami.</p>
+          <div class="input-group mb-3">
+            <input type="email" class="form-control" placeholder="Email Anda">
+            <button class="btn btn-light" type="button"><i class="bi bi-send-fill"></i></button>
+          </div>
+        </div>
+      </div>
+      <hr class="my-4">
+      <div class="text-center small">
+        <p class="mb-0">Hak Cipta &copy;2025 DonasiKu. All rights reserved.</p>
+      </div>
+    </div>
   </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    // Initialize map centered globally initially
+    var map = L.map('map').setView([20, 0], 2);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    var marker;
+
+    // Simple function to parse input: if lat,lng try to parse coords else treat as location name
+    function isLatLng(input) {
+      const parts = input.split(',');
+      if (parts.length !== 2) return false;
+      return !isNaN(parseFloat(parts[0])) && !isNaN(parseFloat(parts[1]));
+    }
+
+    // Geocode location name to coordinates using Nominatim API
+    async function geocodeLocation(location) {
+      const url = new URL('https://nominatim.openstreetmap.org/search');
+      url.search = new URLSearchParams({
+        q: location,
+        format: 'json',
+        limit: 1
+      });
+
+      const resp = await fetch(url);
+      if (!resp.ok) {
+        throw new Error('Failed to fetch geocoding data');
+      }
+      const data = await resp.json();
+      if (data.length === 0) {
+        throw new Error('Location not found');
+      }
+      return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+    }
+
+    async function updateMap(location) {
+      try {
+        let latlng;
+        if (isLatLng(location)) {
+          const parts = location.split(',');
+          latlng = [parseFloat(parts[0]), parseFloat(parts[1])];
+        } else {
+          latlng = await geocodeLocation(location);
+        }
+        if (marker) {
+          marker.setLatLng(latlng);
+        } else {
+          marker = L.marker(latlng).addTo(map);
+        }
+        map.setView(latlng, 13);
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    // Chart.js Bar chart initial setup
+    const ctx = document.getElementById('barChart').getContext('2d');
+
+    const sampleLabels = ['Januari', 'Februari', 'Maret', 'April', 'Mei'];
+    const sampleData = [12, 19, 8, 15, 11, 9];
+
+    const barChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: sampleLabels,
+        datasets: [{
+          label: 'Sample Data',
+          data: sampleData,
+          backgroundColor: [
+            'rgba(76, 201, 240, 0.7)',
+            'rgba(58, 134, 255, 0.7)',
+            'rgba(255, 206, 86, 0.7)',
+            'rgba(75, 192, 192, 0.7)',
+            'rgba(153, 102, 255, 0.7)'
+          ],
+          borderColor: [
+            'rgba(76, 201, 240, 1)',
+            'rgba(58, 134, 255, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)'
+          ],
+          borderWidth: 1,
+          borderRadius: 6,
+          hoverOffset: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            labels: { color: '#212529', font: { size: 14, weight: '600' } }
+          },
+          tooltip: {
+            enabled: true,
+            backgroundColor: '#3a86ff',
+            titleColor: '#fff',
+            bodyColor: '#fff',
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { color: '#212529', stepSize: 5 },
+            grid: { color: '#ccc' }
+          },
+          x: {
+            ticks: { color: '#212529' },
+            grid: { color: '#ccc' }
+          }
+        }
+      }
+    });
+
+    // Form handling for map update
+    const form = document.createElement('form');
+    form.id = 'locationForm';
+    form.autocomplete = 'off';
+
+    // Create input and button dynamically and insert above interactive-section
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.id = 'locationInput';
+    input.placeholder = 'Enter location or coordinates (e.g. New York or 40.7128,-74.0060)';
+    input.className = 'form-control me-2 flex-grow-1';
+
+    const button = document.createElement('button');
+    button.type = 'submit';
+    button.className = 'btn btn-primary';
+    button.textContent = 'Show on Map';
+
+    form.className = 'd-flex mb-4';
+    form.appendChild(input);
+    form.appendChild(button);
+
+    // Insert form after the input data form
+    const main = document.querySelector('main.container');
+    const inputDataForm = main.querySelector('form');
+    main.insertBefore(form, main.querySelector('#interactive-section'));
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const location = input.value.trim();
+      if (!location) {
+        alert('Please enter a location or coordinates.');
+        return;
+      }
+      updateMap(location);
+    });
+  </script>
+
 </body>
 
 </html>
