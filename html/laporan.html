@@ -2,83 +2,99 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Donasi</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Laporan Donasi</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous" />
 </head>
 
-<body>
-    <nav class="navbar navbar-expand-md shadow navbar-light bg-light sticky-top fw-bold">
-    <div class="container-fluid mx-sm-5">
-      <a class="navbar-brand" href="#"><img src="" alt="" width="55px" /></a>
-      <a href="#" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav"
-        aria-expanded="true" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+<body class="bg-light">
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm sticky-top fw-semibold">
+    <div class="container mx-sm-5">
+      <a class="navbar-brand d-flex align-items-center" href="#">
+        <img src="" alt="Logo" width="55" height="55" class="rounded" />
+        <span class="ms-2 fs-4 text-primary fw-bold">DonasiKu</span>
       </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav">
+        <ul class="navbar-nav align-items-center gap-3">
           <li class="nav-item">
             <a class="nav-link" aria-current="page" href="halamanutama.html">Beranda</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#products">Korban Bencana</a>
+            <a class="nav-link" href="#korban">Korban Bencana</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="formulir.html">Lapor</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Kontak</a>
+            <a class="nav-link" href="#kontak">Kontak</a>
           </li>
         </ul>
       </div>
     </div>
   </nav>
 
-    <section class="py-5">
-        <div>
-            <h1 class="text-center">Laporan Donasi Masuk</h1>
-            <table class="table table-bordered mx-4">
-                <thead>
-                    <tr>
-                        <th scope="col">No</th>
-                        <th scope="col">Nama</th>
-                        <th scope="col">Nominal</th>
-                        <th scope="col">Nama Bencana</th>
-                    </tr>
-                </thead>
-                <tbody id="tabel">
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Badali</td>
-                        <td>1.000.000</td>
-                        <td>Banjir</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Rusdi</td>
-                        <td>1.000.000</td>
-                        <td>Kebakaran</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td>Lala</td>
-                        <td>1.000.000</td>
-                        <td>Gempa Bumi</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </section>
+  <!-- Tombol Kembali -->
+  <div class="container my-4" style="max-width: 900px;">
+    <a href="halamanadmin.html" class="btn btn-primary fw-semibold rounded-pill px-4 shadow-sm">
+      &larr; Kembali
+    </a>
+  </div>
 
-    <footer id="kontak" class="bg-dark text-white text-center p-4 mt-5">
-        <p class="mb-0">Hak Cipta &copy;2025 DonasiKu.</p>
-    </footer>
+  <!-- Laporan Donasi -->
+  <section class="py-5">
+    <div class="container bg-white rounded-4 shadow-sm p-4" style="max-width: 900px;">
+      <h1 class="text-center mb-4 fw-bold text-primary">Laporan Donasi Masuk</h1>
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle text-center mb-0">
+          <thead class="table-primary">
+            <tr>
+              <th scope="col" style="width: 5%;">No</th>
+              <th scope="col" style="width: 35%;">Nama</th>
+              <th scope="col" style="width: 30%;">Nominal (Rp)</th>
+              <th scope="col" style="width: 30%;">Nama Bencana</th>
+            </tr>
+          </thead>
+          <tbody id="tabel">
+            <tr>
+              <th scope="row">1</th>
+              <td>Badali</td>
+              <td>1.000.000</td>
+              <td>Banjir</td>
+            </tr>
+            <tr>
+              <th scope="row">2</th>
+              <td>Rusdi</td>
+              <td>1.000.000</td>
+              <td>Kebakaran</td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>Lala</td>
+              <td>1.000.000</td>
+              <td>Gempa Bumi</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
-        crossorigin="anonymous"></script>
+  <!-- Footer -->
+  <footer id="kontak" class="bg-dark text-white text-center py-4 mt-5">
+    <p class="mb-0 small">Hak Cipta &copy;2025 DonasiKu.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
+    crossorigin="anonymous"></script>
 </body>
 
 </html>
