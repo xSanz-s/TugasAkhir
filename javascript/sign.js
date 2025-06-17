@@ -60,29 +60,30 @@ loginForm.addEventListener("submit", (e) => {
   const email = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value;
 
-  const admin = {
-    "id": "admin@gmail.com",
-    "password": "admin123"
+  function isAdmin(email) {
+    // Daftar email admin (bisa diganti dengan sistem yang lebih aman)
+    const adminEmails = ["admin@donasiku.org", "superadmin@donasiku.org"];
+    return adminEmails.includes(email);
   }
 
-  if (email == admin.id && password == admin.password){
-    showMessage("Log In successful! Welcome Admin. ");
-    loginForm.reset();
-    window.location.href = "halamanadmin.html";
-  }else{
-    auth
+  auth
     .signInWithEmailAndPassword(email, password)
-    .then(() => {
-      showMessage(`Sign In successful! Welcome back ${email}.`);
-      loginForm.reset();
+    .then((userCredential) => {
+      const user = userCredential.user;
+
+      // Mengecek apakah admin
+      if (isAdmin(user.email)) {
+        localStorage.setItem("isAdmin", "true");
+      } else {
+        localStorage.setItem("isAdmin", "false");
+      }
+
+      showMessage("Login berhasil!", "success");
       window.location.href = "halamanutama.html";
     })
     .catch((error) => {
       showMessage(error.message, true);
     });
-  }
-
-  
 });
 
 // Monitor auth state changes (optional)
