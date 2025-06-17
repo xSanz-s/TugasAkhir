@@ -4,9 +4,59 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Halaman Utama Donasi</title>
+  <title>DonasiKu - Platform Donasi Bencana</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <style>
+    .hero-section {
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+      color: white;
+      border-radius: 0 0 20px 20px;
+    }
+    
+    .stat-card {
+      transition: transform 0.3s ease;
+      border: none;
+      border-radius: 12px;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .disaster-card {
+      transition: all 0.3s ease;
+      border-radius: 12px;
+    }
+    
+    .disaster-card:hover {
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .progress {
+      height: 8px;
+      border-radius: 4px;
+    }
+    
+    .btn-donate {
+      background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+      border: none;
+      font-weight: 600;
+    }
+    
+    .urgent-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background-color: #dc2626;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+  </style>
 </head>
 
 <body class="bg-light">
@@ -15,7 +65,7 @@
   <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm sticky-top fw-semibold">
     <div class="container mx-sm-5">
       <a class="navbar-brand d-flex align-items-center" href="#">
-        <img src="/resources/logo.jpg" alt="Logo" width="80" height="80" class="rounded" />
+        <img src="/resources/logo.jpg" alt="Logo" width="65" height="65" class="rounded" />
         <span class="ms-2 fs-4 text-primary fw-bold">DonasiKu</span>
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -25,207 +75,395 @@
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         <ul class="navbar-nav align-items-center gap-3">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="halamanutama.html">Beranda</a>
+            <a class="nav-link active fw-semibold" aria-current="page" href="halamanutama.html">Beranda</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#korban">Korban Bencana</a>
+            <a class="nav-link fw-semibold" href="#bencana">Bencana</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="formulir.html">Lapor</a>
+            <a class="nav-link fw-semibold" href="formulir.html">Lapor Bencana</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#kontak">Kontak</a>
+            <a class="nav-link fw-semibold" href="#tentang">Tentang Kami</a>
           </li>
           <li class="nav-item">
-            <a class="btn btn-outline-primary rounded-pill px-4 fw-bold" href="sign.html" id="login">Log In</a>
+            <a class="btn btn-primary rounded-pill px-4 fw-bold" href="sign.html" id="login">
+              <i class="bi bi-box-arrow-in-right me-1"></i>Log In
+            </a>
           </li>
           <li class="nav-item d-none" id="currentUserContainer">
-            <p class="nav-link text-primary mb-0" id="currentUser"></p>
-          </li>
-          <li class="nav-item d-none" id="logoutContainer">
-            <button class="btn btn-outline-danger rounded-pill px-4 fw-bold" id="logout">Log Out</button>
+            <div class="dropdown">
+              <button class="btn btn-outline-primary dropdown-toggle rounded-pill" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-person-circle me-1"></i>
+                <span id="currentUser"></span>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Profil</a></li>
+                <li><a class="dropdown-item" href="#"><i class="bi bi-heart me-2"></i>Donasi Saya</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><button class="dropdown-item text-danger" id="logout"><i class="bi bi-box-arrow-right me-2"></i>Log Out</button></li>
+              </ul>
+            </div>
           </li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <!-- Carousel -->
-  <section class="py-5">
-    <div id="berita" class="carousel slide container" data-bs-ride="carousel" style="max-width: 700px;">
-      <h1 class="mb-4 text-center fw-bold text-primary">BERITA BENCANA TERKINI</h1>
-      <div class="carousel-inner rounded shadow-sm bg-white">
-        <div class="carousel-item active">
-          <img src="/resources/kebarakan.jpeg" class="d-block w-100 rounded-top" alt="Kebakaran"
-            style="height: 350px; object-fit: cover;" />
-          <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded-bottom py-2">
-            <p class="mb-0 fs-5 fw-semibold">Kebakaran</p>
+  <!-- Hero Section -->
+  <section class="hero-section py-5 mb-5">
+    <div class="container py-4">
+      <div class="row align-items-center">
+        <div class="col-lg-6">
+          <h1 class="display-5 fw-bold mb-4">Bantu Sesama, Wujudkan Kepedulian</h1>
+          <p class="lead mb-4">Platform donasi terpercaya untuk membantu korban bencana di seluruh Indonesia. Bersama kita bisa meringankan beban mereka.</p>
+          <div class="d-flex gap-3">
+            <a href="#bencana" class="btn btn-light btn-lg rounded-pill px-4 fw-bold">
+              <i class="bi bi-heart-fill me-1"></i>Donasi Sekarang
+            </a>
+            <a href="formulir.html" class="btn btn-outline-light btn-lg rounded-pill px-4 fw-bold">
+              <i class="bi bi-megaphone-fill me-1"></i>Lapor Bencana
+            </a>
           </div>
         </div>
-        <div class="carousel-item">
-          <img src="/resources/banjir.png" class="d-block w-100 rounded-top" alt="Banjir"
-            style="height: 350px; object-fit: cover;" />
-          <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded-bottom py-2">
-            <p class="mb-0 fs-5 fw-semibold">Banjir</p>
-          </div>
-        </div>
-        <div class="carousel-item">
-          <img src="/resources/gempa.jpg" class="d-block w-100 rounded-top" alt="Gempa Bumi"
-            style="height: 350px; object-fit: cover;" />
-          <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded-bottom py-2">
-            <p class="mb-0 fs-5 fw-semibold">Gempa Bumi</p>
-          </div>
+        <div class="col-lg-6 d-none d-lg-block">
+          <img src="/resources/" alt="gambarDonasi" class="img-fluid rounded-3 shadow">
         </div>
       </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#berita" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon bg-primary rounded-circle p-2"></span>
-        <span class="visually-hidden">Previous</span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#berita" data-bs-slide="next">
-        <span class="carousel-control-next-icon bg-primary rounded-circle p-2"></span>
-        <span class="visually-hidden">Next</span>
-      </button>
     </div>
   </section>
 
-  <!-- Pilihan Keperluan -->
-  <section id="korban" class="container bg-white rounded-4 shadow-sm py-5 px-4 mb-5" style="max-width: 1100px;">
-    <h3 class="text-center mb-5 fw-bold text-primary">Keperluan</h3>
-    <div class="row g-4" id="validated-disasters">
+  <!-- Stats Section -->
+  <section class="container mb-5">
+    <div class="row g-4">
       <div class="col-md-4">
-        <div class="card h-100 border-0 shadow-sm rounded-4">
-          <img src="/resources/gempa.jpg" class="card-img-top rounded-top-4" alt="Gempa Bumi"
-            style="height: 220px; object-fit: cover;" />
-          <div class="card-body d-flex flex-column">
-            <p class="card-text fs-5">Gempa Bumi</p>
-            <h5 class="card-title text-primary fw-bold mb-4">
-              Dana Terkumpul: Rp <span id="gempa">0</span>
-            </h5>
-            <a href="detail.html?id=${key}" class="btn btn-primary mt-auto rounded-pill fw-semibold">Detail</a>
+        <div class="stat-card bg-white p-4 shadow-sm text-center">
+          <div class="mb-3">
+            <i class="bi bi-people-fill fs-1 text-primary"></i>
           </div>
+          <h3 class="fw-bold" id="totalDonatur">10,245</h3>
+          <p class="text-muted mb-0">Donatur Bergabung</p>
         </div>
       </div>
-      <div class="col-md-4" id="validated-disasters">
-        <div class="card h-100 border-0 shadow-sm rounded-4">
-          <img src="/resources/banjir.png" class="card-img-top rounded-top-4" alt="Banjir"
-            style="height: 220px; object-fit: cover;" />
-          <div class="card-body d-flex flex-column">
-            <p class="card-text fs-5">Banjir</p>
-            <h5 class="card-title text-primary fw-bold mb-4">
-              Dana Terkumpul: Rp <span id="banjir">0</span>
-            </h5>
-            <a href="detail.html?id=${key}" class="btn btn-primary mt-auto rounded-pill fw-semibold">Detail</a>
+      <div class="col-md-4">
+        <div class="stat-card bg-white p-4 shadow-sm text-center">
+          <div class="mb-3">
+            <i class="bi bi-cash-coin fs-1 text-success"></i>
           </div>
+          <h3 class="fw-bold" id="totalDonasi">Rp 5,2 M</h3>
+          <p class="text-muted mb-0">Total Donasi</p>
         </div>
       </div>
-      <div class="col-md-4" id="validated-disasters">
-        <div class="card h-100 border-0 shadow-sm rounded-4">
-          <img src="/resources/kebarakan.jpeg" class="card-img-top rounded-top-4" alt="Kebakaran"
-            style="height: 220px; object-fit: cover;" />
-          <div class="card-body d-flex flex-column">
-            <p class="card-text fs-5">Kebakaran</p>
-            <h5 class="card-title text-primary fw-bold mb-4">
-              Dana Terkumpul: Rp <span id="kebarakan">0</span>
-            </h5>
-            <a href="detail.html?id=${key}" class="btn btn-primary mt-auto rounded-pill fw-semibold">Detail</a>
+      <div class="col-md-4">
+        <div class="stat-card bg-white p-4 shadow-sm text-center">
+          <div class="mb-3">
+            <i class="bi bi-building fs-1 text-warning"></i>
+          </div>
+          <h3 class="fw-bold" id="totalBencana">127</h3>
+          <p class="text-muted mb-0">Bencana Tertangani</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Disaster List Section -->
+  <section id="bencana" class="container mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="fw-bold text-primary">Bencana Terkini</h2>
+      <div class="dropdown">
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-funnel-fill me-1"></i>Filter
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+          <li><a class="dropdown-item" href="#">Semua</a></li>
+          <li><a class="dropdown-item" href="#">Paling Mendesak</a></li>
+          <li><a class="dropdown-item" href="#">Terbaru</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="#">Gempa Bumi</a></li>
+          <li><a class="dropdown-item" href="#">Banjir</a></li>
+          <li><a class="dropdown-item" href="#">Kebakaran</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="row g-4" id="validated-disasters">
+      <!-- Loading placeholder -->
+      <div class="col-12">
+        <div class="card shadow-sm">
+          <div class="card-body text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3">Memuat data bencana...</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Ganti seluruh bagian #korban dengan ini -->
-<section id="korban" class="container bg-white rounded-4 shadow-sm py-5 px-4 mb-5" style="max-width: 1100px;">
-  <h3 class="text-center mb-5 fw-bold text-primary">Bencana yang Telah Divalidasi</h3>
-  <div class="row g-4" id="validated-disasters">
-    <!-- Kartu bencana akan ditampilkan di sini secara dinamis -->
-  </div>
-</section>
+  <!-- How It Works Section -->
+  <section id="tentang" class="bg-white py-5 mb-5">
+    <div class="container">
+      <h2 class="text-center fw-bold mb-5 text-primary">Bagaimana DonasiKu Bekerja?</h2>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="text-center px-3">
+            <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+              <i class="bi bi-megaphone-fill fs-3 text-primary"></i>
+            </div>
+            <h4 class="fw-bold mb-3">1. Lapor Bencana</h4>
+            <p class="text-muted">Masyarakat atau relawan dapat melaporkan bencana melalui platform kami untuk diverifikasi.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="text-center px-3">
+            <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+              <i class="bi bi-shield-check fs-3 text-primary"></i>
+            </div>
+            <h4 class="fw-bold mb-3">2. Verifikasi Data</h4>
+            <p class="text-muted">Tim kami akan memverifikasi laporan untuk memastikan validitas informasi.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="text-center px-3">
+            <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+              <i class="bi bi-cash-coin fs-3 text-primary"></i>
+            </div>
+            <h4 class="fw-bold mb-3">3. Donasi Tersalurkan</h4>
+            <p class="text-muted">Donasi akan disalurkan secara transparan kepada yang membutuhkan.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="bg-primary py-5 mb-5 text-white">
+    <div class="container text-center">
+      <h2 class="fw-bold mb-4">Siap Membantu Sesama?</h2>
+      <p class="lead mb-4">Bergabunglah dengan ribuan donatur lainnya untuk meringankan beban korban bencana.</p>
+      <a href="#bencana" class="btn btn-light btn-lg rounded-pill px-4 fw-bold">
+        <i class="bi bi-heart-fill me-1"></i>Donasi Sekarang
+      </a>
+    </div>
+  </section>
 
   <!-- Footer -->
-  <footer id="kontak" class="bg-dark text-white text-center py-4">
-    <p class="mb-0 small">Hak Cipta &copy;2025 DonasiKu.</p>
+  <footer class="bg-dark text-white py-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 mb-4 mb-lg-0">
+          <h3 class="h5 fw-bold mb-3">
+            <i class="bi bi-heart-pulse-fill me-2"></i>DonasiKu
+          </h3>
+          <p>Platform donasi terpercaya untuk membantu korban bencana di seluruh Indonesia.</p>
+          <div class="d-flex gap-3">
+            <a href="#" class="text-white"><i class="bi bi-facebook fs-4"></i></a>
+            <a href="#" class="text-white"><i class="bi bi-twitter fs-4"></i></a>
+            <a href="#" class="text-white"><i class="bi bi-instagram fs-4"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+          <h4 class="h6 fw-bold mb-3">Tautan Cepat</h4>
+          <ul class="list-unstyled">
+            <li class="mb-2"><a href="#" class="text-white text-decoration-none">Beranda</a></li>
+            <li class="mb-2"><a href="#bencana" class="text-white text-decoration-none">Bencana</a></li>
+            <li class="mb-2"><a href="formulir.html" class="text-white text-decoration-none">Lapor Bencana</a></li>
+            <li class="mb-2"><a href="#tentang" class="text-white text-decoration-none">Tentang Kami</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-3 col-md-4 mb-4 mb-md-0">
+          <h4 class="h6 fw-bold mb-3">Kontak Kami</h4>
+          <ul class="list-unstyled">
+            <li class="mb-2"><i class="bi bi-envelope-fill me-2"></i> info@donasiku.org</li>
+            <li class="mb-2"><i class="bi bi-telephone-fill me-2"></i> (021) 1234-5678</li>
+            <li><i class="bi bi-geo-alt-fill me-2"></i> Jakarta, Indonesia</li>
+          </ul>
+        </div>
+        <div class="col-lg-3 col-md-4">
+          <h4 class="h6 fw-bold mb-3">Newsletter</h4>
+          <p>Dapatkan update terbaru tentang bencana dan kegiatan kami.</p>
+          <div class="input-group mb-3">
+            <input type="email" class="form-control" placeholder="Email Anda">
+            <button class="btn btn-light" type="button"><i class="bi bi-send-fill"></i></button>
+          </div>
+        </div>
+      </div>
+      <hr class="my-4">
+      <div class="text-center small">
+        <p class="mb-0">Hak Cipta &copy;2025 DonasiKu. All rights reserved.</p>
+      </div>
+    </div>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
     crossorigin="anonymous"></script>
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-
-  <script src="/javascript/home.js"></script>
-
   <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyD80y7jAbZB5fjxBuPfq3UpUU1NY8BT6JE",
-    authDomain: "tugasakhir-970f9.firebaseapp.com",
-    databaseURL: "https://tugasakhir-970f9-default-rtdb.firebaseio.com",
-    projectId: "tugasakhir-970f9",
-    storageBucket: "tugasakhir-970f9.firebasestorage.app",
-    messagingSenderId: "558954760051",
-    appId: "1:558954760051:web:35a97d43a3b5eafe2c6706"
-  };
+    const firebaseConfig = {
+      apiKey: "AIzaSyD80y7jAbZB5fjxBuPfq3UpUU1NY8BT6JE",
+      authDomain: "tugasakhir-970f9.firebaseapp.com",
+      databaseURL: "https://tugasakhir-970f9-default-rtdb.firebaseio.com",
+      projectId: "tugasakhir-970f9",
+      storageBucket: "tugasakhir-970f9.firebasestorage.app",
+      messagingSenderId: "558954760051",
+      appId: "1:558954760051:web:35a97d43a3b5eafe2c6706"
+    };
 
-  const app = initializeApp(firebaseConfig);
-  const database = getDatabase(app);
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const auth = getAuth(app);
 
-  // Referensi ke data validasi
-  const validasiRef = ref(database, 'validasi');
+    // Handle authentication state
+    onAuthStateChanged(auth, (user) => {
+      const loginBtn = document.getElementById('login');
+      const currentUser = document.getElementById('currentUser');
+      const currentUserContainer = document.getElementById('currentUserContainer');
+      const logoutBtn = document.getElementById('logout');
 
-  // Fungsi untuk menampilkan data validasi
-  function tampilkanDataValidasi() {
-    onValue(validasiRef, (snapshot) => {
-      const data = snapshot.val();
-      const container = document.getElementById('korban');
-      const cardsContainer = container.querySelector('.row');
-      
-      // Reset kontainer kartu
-      cardsContainer.innerHTML = '';
-      
-      if (data) {
-        Object.values(data).forEach((item, index) => {
-          const card = `
-            <div class="col-md-4 mb-4">
-              <div class="card h-100 border-0 shadow-sm rounded-4">
-                <img src="${item.foto || 'https://via.placeholder.com/300x200?text=No+Image'}" 
-                     class="card-img-top rounded-top-4" 
-                     alt="${item.namaBencana}" 
-                     style="height: 220px; object-fit: cover;" />
-                <div class="card-body d-flex flex-column">
-                  <h5 class="card-title">${item.namaBencana || 'Bencana'}</h5>
-                  <p class="card-text">
-                    <strong>Lokasi:</strong> ${item.lokasi || '-'}<br>
-                    <strong>Tanggal:</strong> ${item.tanggal || '-'}
-                  </p>
-                  <p class="text-primary fw-bold">
-                    Dana Dibutuhkan: Rp ${parseInt(item.target || 0).toLocaleString()}
-                  </p>
-                  <a href="#" class="btn btn-primary mt-auto rounded-pill fw-semibold">detail</a>
+      if (user) {
+        // User is signed in
+        loginBtn.classList.add('d-none');
+        currentUserContainer.classList.remove('d-none');
+        currentUser.textContent = user.email.split('@')[0];
+        
+        if (logoutBtn) {
+          logoutBtn.addEventListener('click', () => {
+            signOut(auth).then(() => {
+              window.location.href = 'halamanutama.html';
+            });
+          });
+        }
+      } else {
+        // User is signed out
+        loginBtn.classList.remove('d-none');
+        currentUserContainer.classList.add('d-none');
+      }
+    });
+
+    // Function to format currency
+    function formatCurrency(amount) {
+      return parseInt(amount || 0).toLocaleString('id-ID');
+    }
+
+    // Function to calculate progress percentage
+    function calculateProgress(donated, target) {
+      const donatedNum = parseFloat(donated) || 0;
+      const targetNum = parseFloat(target) || 1;
+      return Math.min(Math.round((donatedNum / targetNum) * 100), 100);
+    }
+
+    // Function to display validated disasters
+    function displayValidatedDisasters() {
+      const validasiRef = ref(database, 'validasi');
+      const container = document.getElementById('validated-disasters');
+      const totalDonasiElement = document.getElementById('totalDonasi');
+      const totalDonaturElement = document.getElementById('totalDonatur');
+      const totalBencanaElement = document.getElementById('totalBencana');
+
+      onValue(validasiRef, (snapshot) => {
+        const data = snapshot.val();
+        
+        if (data && Object.keys(data).length > 0) {
+          let cardsHTML = '';
+          let totalDonasi = 0;
+          let totalDonatur = 0;
+          
+          Object.entries(data).forEach(([key, item]) => {
+            const progress = calculateProgress(item.donated, item.target);
+            totalDonasi += parseFloat(item.donated) || 0;
+            totalDonatur += parseInt(item.donatur) || 0;
+            
+            const urgencyClass = item.urgent ? 'border-start border-5 border-danger' : '';
+            
+            cardsHTML += `
+              <div class="col-12">
+                <div class="disaster-card card shadow-sm mb-3 ${urgencyClass}">
+                  <div class="card-body">
+                    ${item.urgent ? '<span class="urgent-badge"><i class="bi bi-exclamation-triangle-fill me-1"></i>Mendesak</span>' : ''}
+                    <div class="d-flex flex-column flex-md-row justify-content-between">
+                      <div class="mb-3 mb-md-0">
+                        <h4 class="fw-bold mb-2">${item.namaBencana || 'Bencana'}</h4>
+                        <div class="d-flex flex-wrap gap-3 mb-2">
+                          <span class="text-muted"><i class="bi bi-geo-alt-fill me-1"></i>${item.lokasi || '-'}</span>
+                          <span class="text-muted"><i class="bi bi-calendar-event me-1"></i>${item.tanggal || '-'}</span>
+                          <span class="text-muted"><i class="bi bi-people-fill me-1"></i>${formatCurrency(item.donatur || 0)} Donatur</span>
+                        </div>
+                        <p class="mb-3">${item.deskripsi || 'Tidak ada deskripsi tersedia.'}</p>
+                      </div>
+                      <div class="d-flex flex-column" style="min-width: 250px;">
+                        <div class="mb-2">
+                          <span class="d-block text-end fw-bold text-primary">Rp ${formatCurrency(item.donated || 0)}</span>
+                          <small class="text-muted">Terkumpul dari Rp ${formatCurrency(item.target || 0)}</small>
+                        </div>
+                        <div class="progress mb-3">
+                          <div class="progress-bar bg-success" role="progressbar" style="width: ${progress}%" aria-valuenow="${progress}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="d-flex gap-2">
+                          <a href="detail.html?id=${key}" class="btn btn-outline-primary flex-grow-1">
+                            <i class="bi bi-info-circle me-1"></i>Detail
+                          </a>
+                          <a href="donasi.html?id=${key}" class="btn btn-donate text-white flex-grow-1">
+                            <i class="bi bi-heart-fill me-1"></i>Donasi
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `;
+          });
+          
+          container.innerHTML = cardsHTML;
+          
+          // Update stats
+          totalDonasiElement.textContent = `Rp ${formatCurrency(totalDonasi)}`;
+          totalDonaturElement.textContent = formatCurrency(totalDonatur);
+          totalBencanaElement.textContent = Object.keys(data).length;
+        } else {
+          container.innerHTML = `
+            <div class="col-12">
+              <div class="card shadow-sm">
+                <div class="card-body text-center py-5">
+                  <i class="bi bi-exclamation-circle fs-1 text-muted mb-3"></i>
+                  <h4 class="text-muted">Belum ada data bencana yang divalidasi</h4>
+                  <p>Data yang divalidasi akan muncul di sini</p>
+                  <a href="formulir.html" class="btn btn-primary mt-3">
+                    <i class="bi bi-megaphone-fill me-1"></i>Laporkan Bencana
+                  </a>
                 </div>
               </div>
             </div>
           `;
-          cardsContainer.innerHTML += card;
-        });
-      } else {
-        cardsContainer.innerHTML = `
-          <div class="col-12 text-center py-5">
-            <h4 class="text-muted">Belum ada data bencana yang divalidasi</h4>
-            <p>Data yang divalidasi akan muncul di sini</p>
+        }
+      }, (error) => {
+        container.innerHTML = `
+          <div class="col-12">
+            <div class="card shadow-sm">
+              <div class="card-body text-center py-5">
+                <i class="bi bi-exclamation-triangle-fill fs-1 text-danger mb-3"></i>
+                <h4 class="text-danger">Gagal memuat data</h4>
+                <p>${error.message}</p>
+                <button onclick="location.reload()" class="btn btn-outline-primary mt-3">
+                  <i class="bi bi-arrow-repeat me-1"></i>Coba Lagi
+                </button>
+              </div>
+            </div>
           </div>
         `;
-      }
+      });
+    }
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      displayValidatedDisasters();
     });
-  }
-
-  // Panggil fungsi saat halaman dimuat
-  document.addEventListener('DOMContentLoaded', tampilkanDataValidasi);
-</script>
+  </script>
 </body>
-
 </html>

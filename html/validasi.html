@@ -27,29 +27,29 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-md shadow navbar-light bg-light sticky-top fw-bold">
-        <div class="container-fluid mx-sm-5">
+    <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm sticky-top fw-semibold">
+        <div class="container mx-sm-5">
             <a class="navbar-brand d-flex align-items-center" href="#">
                 <img src="/resources/logo.jpg" alt="Logo" width="65" height="65" class="rounded" />
                 <span class="ms-2 fs-4 text-primary fw-bold">DonasiKu</span>
             </a>
-            <a href="#" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="true" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
-            </a>
+            </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav">
+                <ul class="navbar-nav align-items-center gap-3">
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="halamanutama.html">Beranda</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#products">Korban Bencana</a>
+                        <a class="nav-link" href="halamanutama.html">Bencana</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="formulir.html">Lapor</a>
+                        <a class="nav-link active fw-bold" href="formulir.html">Lapor Bencana</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Kontak</a>
+                        <a class="nav-link" href="#tentang">Tentang Kami</a>
                     </li>
                 </ul>
             </div>
@@ -101,7 +101,7 @@
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-        import { getDatabase, ref, onValue, get , set, remove } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+        import { getDatabase, ref, onValue, get, set, remove } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
 
         // Konfigurasi Firebase (ganti dengan milik Anda)
         const firebaseConfig = {
@@ -162,7 +162,7 @@
                     document.getElementById("detail-bencana").textContent = data.namaBencana || "-";
                     document.getElementById("detail-tempat").textContent = data.lokasi || "-";
                     document.getElementById("detail-tanggal").textContent = data.tanggal || "-";
-                    document.getElementById("detail-foto").src =data.foto || "https://via.placeholder.com/300x200?text=No+Image";
+                    document.getElementById("detail-foto").src = data.foto || "https://via.placeholder.com/300x200?text=No+Image";
                     document.getElementById("detail-dana").textContent = data.target || "0";
                     document.getElementById("detail-pelapor").textContent = data.namaPelapor || "-";
 
@@ -187,35 +187,35 @@
         window.onload = getDataRealTime;
 
         // Fungsi validasi data (memindahkan ke node validasi)
-  window.validasiData = async function (key) {
-    if (confirm("Apakah Anda yakin ingin memvalidasi data ini?")) {
-      try {
-        // Ambil data dari laporan
-        const laporanRef = ref(database, "laporan/" + key);
-        const snapshot = await get(laporanRef);
-        
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          
-          // Pindahkan ke node validasi
-          const validRef = ref(database, "validasi/" + key);
-          await set(validRef, data);
-          
-          // Hapus dari node laporan
-          await remove(laporanRef);
-          
-          alert("Data telah divalidasi!");
-        } else {
-          alert("Data tidak ditemukan!");
-        }
-      } catch (error) {
-        alert("Gagal memvalidasi: " + error.message);
-      }
-    }
-  };
+        window.validasiData = async function (key) {
+            if (confirm("Apakah Anda yakin ingin memvalidasi data ini?")) {
+                try {
+                    // Ambil data dari laporan
+                    const laporanRef = ref(database, "laporan/" + key);
+                    const snapshot = await get(laporanRef);
+
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+
+                        // Pindahkan ke node validasi
+                        const validRef = ref(database, "validasi/" + key);
+                        await set(validRef, data);
+
+                        // Hapus dari node laporan
+                        await remove(laporanRef);
+
+                        alert("Data telah divalidasi!");
+                    } else {
+                        alert("Data tidak ditemukan!");
+                    }
+                } catch (error) {
+                    alert("Gagal memvalidasi: " + error.message);
+                }
+            }
+        };
     </script>
 
-  
+
 </body>
 
 </html>
