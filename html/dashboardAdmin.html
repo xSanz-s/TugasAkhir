@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+        <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="SB-Mid-client-hE_JoUIl7lzzo4Bm"></script>
+</head>
+<body>
+  <button onclick="pay()">Bayar Sekarang</button>
+  <script>
+    function pay() {
+      // 1. Dapatkan token transaksi dari backend (contoh)
+      fetch('/api/get_transaction_token')
+        .then(response => response.json())
+        .then(data => {
+          if (data.token) {
+            // 2. Inisialisasi Snap dengan token
+            snap.pay(data.token, {
+              onSuccess: function(result){
+                console.log(result);
+                alert('Pembayaran berhasil!');
+              },
+              onPending: function(result){
+                console.log(result);
+                alert('Menunggu pembayaran...');
+              },
+              onError: function(result){
+                console.log(result);
+                alert('Pembayaran gagal!');
+              },
+              onClose: function(){
+                alert('Anda menutup jendela pembayaran.');
+              }
+            });
+          } else {
+            alert('Gagal mendapatkan token transaksi.');
+          }
+        });
+    }
+  </script>
+</body>
+</html>
