@@ -79,7 +79,7 @@ loginForm.addEventListener("submit", (e) => {
       }
 
       showMessage("Login berhasil!", "success");
-      window.location.href = "halamanutama.html";
+      window.location.href = "index.html";
     })
     .catch((error) => {
       showMessage(error.message, true);

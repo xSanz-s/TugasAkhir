@@ -237,6 +237,13 @@
         margin: 20px 0;
       }
 
+      .loading-spinner {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 200px;
+      }
+
       @media (max-width: 768px) {
         .hero-section {
           padding: 60px 0 80px;
@@ -260,12 +267,11 @@
       class="navbar navbar-expand-md navbar-light bg-white shadow-sm sticky-top fw-semibold">
       <div class="container mx-sm-5">
         <a class="navbar-brand d-flex align-items-center" href="#">
-          <img
-            src="/resources/logo.jpg"
-            alt="Logo"
-            width="65"
-            height="65"
-            class="rounded" />
+          <div
+            class="bg-primary text-white rounded d-flex align-items-center justify-content-center"
+            style="width: 65px; height: 65px">
+            <i class="bi bi-heart-fill fs-4"></i>
+          </div>
           <span class="ms-2 fs-4 text-primary fw-bold">DonasiKu</span>
         </a>
         <button
@@ -283,12 +289,12 @@
           id="navbarNav">
           <ul class="navbar-nav align-items-center gap-3">
             <li class="nav-item">
-              <a class="nav-link" aria-current="page" href="halamanutama.html"
+              <a class="nav-link" aria-current="page" href="index.html"
                 >Beranda</a
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="halamanutama.html">Bencana</a>
+              <a class="nav-link" href="index.html">Bencana</a>
             </li>
             <li class="nav-item">
               <a class="nav-link active fw-bold" href="formulir.html"
@@ -337,9 +343,8 @@
               </div>
 
               <div class="dev-alert">
-                <i class="bi bi-info-circle me-2"></i> Mode Pengembangan: Token
-                pembayaran dibuat di frontend. Untuk produksi, gunakan backend
-                untuk keamanan.
+                <i class="bi bi-info-circle me-2"></i> NOTE: Harap Selesaikan
+                Pembayaran Secepatnya.
               </div>
 
               <div class="mb-4">
@@ -410,7 +415,8 @@
                     type="tel"
                     class="form-control form-control-lg"
                     id="phone"
-                    placeholder="0812-3456-7890" />
+                    placeholder="0812-3456-7890"
+                    required />
                 </div>
 
                 <div class="mb-4">
@@ -421,7 +427,9 @@
                     class="form-control"
                     id="pesan"
                     rows="3"
-                    placeholder="Tulis pesan penyemangat untuk korban bencana"></textarea>
+                    placeholder="Tulis pesan penyemangat untuk korban bencana">
+Semoga segera pulih dan bangkit kembali!</textarea
+                  >
                 </div>
 
                 <input
@@ -453,9 +461,10 @@
             <div class="card-body p-4 p-md-5">
               <h3 class="card-title mb-4 fw-semibold">Donasi Terbaru</h3>
               <div id="recentDonations" class="mb-4">
-                <div class="text-center py-4">
-                  <div class="spinner-border text-primary" role="status"></div>
-                  <p class="mt-3">Memuat data donasi...</p>
+                <div class="loading-spinner">
+                  <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Memuat...</span>
+                  </div>
                 </div>
               </div>
 
@@ -476,7 +485,7 @@
                     <small
                       >Tujuan:
                       <span id="targetAmount" class="fw-semibold"
-                        >Rp 50.000.000</span
+                        >Rp 5.000.000</span
                       ></small
                     >
                   </div>
@@ -632,8 +641,8 @@
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
       crossorigin="anonymous"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <script
       type="text/javascript"
       src="https://app.sandbox.midtrans.com/snap/snap.js"
@@ -646,55 +655,47 @@
         authDomain: "tugasakhir-970f9.firebaseapp.com",
         databaseURL: "https://tugasakhir-970f9-default-rtdb.firebaseio.com",
         projectId: "tugasakhir-970f9",
-        storageBucket: "tugasakhir-970f9.firebasestorage.app",
+        storageBucket: "tugasakhir-970f9.appspot.com",
         messagingSenderId: "558954760051",
         appId: "1:558954760051:web:35a97d43a3b5eafe2c6706",
       };
 
       // Inisialisasi Firebase
-      try {
-        firebase.initializeApp(firebaseConfig);
-      } catch (error) {
-        console.error("Firebase initialization error", error);
-      }
-
+      firebase.initializeApp(firebaseConfig);
       const database = firebase.database();
-
-      // Update status koneksi Firebase
-      const statusElement = document.getElementById("firebaseStatus");
-      if (database) {
-        database.ref(".info/connected").on("value", (snapshot) => {
-          if (snapshot.val() === true) {
-            statusElement.innerHTML =
-              '<i class="bi bi-database me-2"></i> Firebase: Connected';
-            statusElement.className = "firebase-status firebase-connected";
-          } else {
-            statusElement.innerHTML =
-              '<i class="bi bi-database me-2"></i> Firebase: Disconnected';
-            statusElement.className = "firebase-status firebase-disconnected";
-          }
-        });
-      } else {
-        statusElement.innerHTML =
-          '<i class="bi bi-database me-2"></i> Firebase: Initialization Failed';
-        statusElement.className = "firebase-status firebase-disconnected";
-      }
 
       // Variabel global
       let selectedAmount = 0;
       let totalDonations = 0;
-      const DONATION_TARGET = 50000000;
-      let newDonationRef = null;
+      const DONATION_TARGET = 5000000;
       let bencanaId = null;
       let bencanaNama = null;
-
-      // Referensi Firebase
-      const donationsRef = database ? database.ref("donations") : null;
-      const laporanRef = database ? database.ref("laporan_donasi") : null;
 
       // Fungsi untuk memformat mata uang
       function formatCurrency(amount) {
         return "Rp " + amount.toLocaleString("id-ID");
+      }
+
+      // Update status koneksi Firebase
+      function setupFirebaseConnectionStatus() {
+        const connectedRef = database.ref(".info/connected");
+        const statusElement = document.getElementById("firebaseStatus");
+
+        connectedRef.on("value", (snap) => {
+          if (snap.val() === true) {
+            statusElement.textContent = "Firebase: Connected";
+            statusElement.classList.replace(
+              "firebase-disconnected",
+              "firebase-connected"
+            );
+          } else {
+            statusElement.textContent = "Firebase: Disconnected";
+            statusElement.classList.replace(
+              "firebase-connected",
+              "firebase-disconnected"
+            );
+          }
+        });
       }
 
       // Update total donasi dan progress bar
@@ -713,88 +714,6 @@
         ).style.width = `${progressPercentage}%`;
         document.getElementById("targetAmount").textContent =
           formatCurrency(DONATION_TARGET);
-      }
-
-      // Load data donasi jika Firebase tersedia
-      if (donationsRef) {
-        // Update total donasi
-        donationsRef.on("value", (snapshot) => {
-          totalDonations = 0;
-          const donations = snapshot.val();
-
-          if (donations) {
-            Object.values(donations).forEach((donation) => {
-              if (donation.status === "success") {
-                totalDonations += donation.amount || 0;
-              }
-            });
-          }
-
-          updateDonationProgress();
-        });
-
-        // Tampilkan donasi terbaru
-        donationsRef.limitToLast(5).on("value", (snapshot) => {
-          const donations = snapshot.val();
-          const donationsContainer = document.getElementById("recentDonations");
-
-          if (!donations) {
-            donationsContainer.innerHTML =
-              '<div class="text-center py-3 text-secondary">Belum ada donasi</div>';
-            return;
-          }
-
-          let html = "";
-          Object.keys(donations)
-            .reverse()
-            .forEach((key) => {
-              const donation = donations[key];
-
-              // Format waktu
-              const date = new Date(donation.timestamp);
-              const formattedDate = date.toLocaleDateString("id-ID", {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-              });
-
-              // Tentukan warna badge berdasarkan status
-              let badgeClass = "bg-secondary";
-              if (donation.status === "success") badgeClass = "bg-success";
-              else if (donation.status === "pending")
-                badgeClass = "bg-warning text-dark";
-              else if (donation.status === "failed") badgeClass = "bg-danger";
-
-              html += `
-            <div class="donation-card position-relative">
-              <div class="d-flex justify-content-between align-items-start mb-2">
-                <div>
-                  <h5 class="mb-0">${donation.name || "Anonim"}</h5>
-                  <small class="text-muted">${formattedDate}</small>
-                </div>
-                <span class="badge ${badgeClass} rounded-pill">${
-                donation.status
-              }</span>
-              </div>
-              <div class="mt-2 fw-bold">${formatCurrency(
-                donation.amount || 0
-              )}</div>
-              ${
-                donation.message
-                  ? `<div class="mt-2">"${donation.message}"</div>`
-                  : ""
-              }
-            </div>
-          `;
-            });
-
-          donationsContainer.innerHTML = html;
-        });
-      } else {
-        document.getElementById("recentDonations").innerHTML =
-          '<div class="alert alert-danger">Koneksi Firebase gagal. Silakan refresh halaman.</div>';
       }
 
       // Handler untuk tombol nominal
@@ -832,21 +751,154 @@
         return decodeURIComponent(results[2].replace(/\+/g, " "));
       }
 
-      // Fungsi untuk membuat token Midtrans di frontend
-      function createMidtransToken(transactionData) {
-        return new Promise((resolve, reject) => {
-          window.snap.createTransactionToken(transactionData, (token) => {
-            if (token) {
-              resolve(token);
-            } else {
-              reject(new Error("Gagal membuat token pembayaran"));
+      // Muat data donasi terbaru dari Firebase
+      function loadRecentDonations() {
+        const donationsRef = database
+          .ref("donations")
+          .orderByChild("timestamp")
+          .limitToLast(5);
+        const donationsContainer = document.getElementById("recentDonations");
+
+        donationsContainer.innerHTML = `
+        <div class="loading-spinner">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Memuat...</span>
+          </div>
+        </div>
+      `;
+
+        donationsRef.on(
+          "value",
+          (snapshot) => {
+            donationsContainer.innerHTML = "";
+
+            if (!snapshot.exists()) {
+              donationsContainer.innerHTML = `
+            <div class="alert alert-info">
+              Belum ada donasi terbaru
+            </div>
+          `;
+              return;
             }
-          });
-        });
+
+            const donations = [];
+            snapshot.forEach((childSnapshot) => {
+              donations.push({
+                id: childSnapshot.key,
+                ...childSnapshot.val(),
+              });
+            });
+
+            // Urutkan dari yang terbaru (descending)
+            donations.reverse();
+
+            donations.forEach((donation) => {
+              const date = new Date(donation.timestamp);
+              const formattedDate = date.toLocaleDateString("id-ID", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              });
+
+              const donationHTML = `
+            <div class="donation-card">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                  <h5 class="mb-0">${donation.name || "Anonim"}</h5>
+                  <small class="text-muted">${formattedDate}</small>
+                </div>
+                <span class="badge bg-success rounded-pill">success</span>
+              </div>
+              <div class="mt-2 fw-bold">${formatCurrency(donation.amount)}</div>
+              <div class="mt-2">"${donation.message || "Tidak ada pesan"}"</div>
+            </div>
+          `;
+
+              donationsContainer.innerHTML += donationHTML;
+            });
+          },
+          (error) => {
+            console.error("Error loading donations:", error);
+            donationsContainer.innerHTML = `
+          <div class="alert alert-danger">
+            Gagal memuat data donasi: ${error.message}
+          </div>
+        `;
+          }
+        );
+      }
+
+      // Hitung total donasi dari Firebase
+      function calculateTotalDonations() {
+        const donationsRef = database.ref("donations");
+
+        donationsRef.on(
+          "value",
+          (snapshot) => {
+            let total = 0;
+            snapshot.forEach((childSnapshot) => {
+              const donation = childSnapshot.val();
+              total += donation.amount;
+            });
+
+            totalDonations = total;
+            updateDonationProgress();
+          },
+          (error) => {
+            console.error("Error calculating total donations:", error);
+          }
+        );
+      }
+
+      // Fungsi untuk toggle loading button
+      function togglePaymentButton(isLoading) {
+        const button = document.getElementById("payButton");
+        const spinner = document.getElementById("buttonSpinner");
+
+        if (button && spinner) {
+          button.disabled = isLoading;
+          spinner.classList.toggle("d-none", !isLoading);
+          document.getElementById("buttonText").textContent = isLoading
+            ? "Memproses..."
+            : "Lanjutkan Pembayaran";
+        }
+      }
+
+      // Fungsi untuk menampilkan pesan sukses
+      function showSuccessMessage(name, amount, email) {
+        const donationForm = document.getElementById("donationForm");
+        if (!donationForm) return;
+
+        donationForm.innerHTML = `
+        <div class="success-container">
+          <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="#28a745" class="bi bi-check-circle-fill mb-4" viewBox="0 0 16 16">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+          </svg>
+          <h2 class="text-success mb-3">Terima Kasih, ${name}!</h2>
+          <p class="lead">Donasi sebesar <strong>${formatCurrency(
+            amount
+          )}</strong> berhasil diproses.</p>
+          <p class="mb-4">Kami telah mengirimkan email konfirmasi ke <strong>${email}</strong>.</p>
+          <div class="d-grid gap-2">
+            <button onclick="window.location.reload()" class="btn btn-primary">Buat Donasi Lagi</button>
+            <button onclick="window.location.href = 'index.html'" class="btn btn-outline-primary">Kembali ke Beranda</button>
+          </div>
+        </div>
+      `;
       }
 
       // Saat halaman dimuat
       document.addEventListener("DOMContentLoaded", function () {
+        // Setup Firebase connection status
+        setupFirebaseConnectionStatus();
+
+        // Load data
+        loadRecentDonations();
+        calculateTotalDonations();
+
+        // Get URL parameters
         bencanaId = getUrlParameter("bencanaId");
         bencanaNama = getUrlParameter("nama");
 
@@ -855,6 +907,9 @@
             "bencanaTitle"
           ).textContent = `Bantu Korban ${decodeURIComponent(bencanaNama)}`;
         }
+
+        // Set default amount
+        nominalButtons[0].click();
 
         // Handler form submit
         document
@@ -874,6 +929,13 @@
             const phone = document.getElementById("phone").value;
             const message = document.getElementById("pesan").value;
 
+            // Validasi nomor telepon
+            const cleanedPhone = phone.replace(/\D/g, "");
+            if (cleanedPhone.length < 10 || cleanedPhone.length > 13) {
+              alert("Nomor telepon harus 10-13 digit angka");
+              return;
+            }
+
             // Tampilkan loading
             togglePaymentButton(true);
 
@@ -887,25 +949,6 @@
             const orderId = "DONASI-" + new Date().getTime();
 
             try {
-              // Simpan data transaksi ke Firebase sebagai "pending"
-              if (donationsRef) {
-                newDonationRef = donationsRef.push();
-                await newDonationRef.set({
-                  id: orderId,
-                  name: name,
-                  email: email,
-                  phone: phone,
-                  message: message,
-                  amount: selectedAmount,
-                  status: "pending",
-                  timestamp: new Date().toISOString(),
-                  bencanaId: bencanaId,
-                  bencanaNama: bencanaNama
-                    ? decodeURIComponent(bencanaNama)
-                    : "Bencana Umum",
-                });
-              }
-
               // Siapkan data transaksi
               const transactionData = {
                 transaction_details: {
@@ -916,7 +959,7 @@
                   first_name: name.split(" ")[0] || name,
                   last_name: name.split(" ")[1] || "",
                   email: email,
-                  phone: phone,
+                  phone: cleanedPhone,
                 },
                 item_details: [
                   {
@@ -932,142 +975,70 @@
                 },
               };
 
-              // Membuat token pembayaran
-              const token = await createMidtransToken(transactionData);
-
-              console.log("Generated Token:", token);
-
-              // Tampilkan popup pembayaran Midtrans dengan token
-              window.snap.pay(token, {
+              // Langsung gunakan window.snap.pay
+              window.snap.pay(transactionData, {
                 onSuccess: function (result) {
                   console.log("Payment success", result);
-                  // Update status di Firebase
-                  updateDonationStatus("success", result);
-                  showSuccessMessage(name, selectedAmount);
-                  paymentModal.hide();
 
-                  // Simpan ke laporan
-                  if (laporanRef) {
-                    laporanRef.push({
-                      nama: name,
-                      nominal: selectedAmount,
-                      bencana: bencanaNama
-                        ? decodeURIComponent(bencanaNama)
-                        : "Bencana Umum",
-                      tanggal: new Date().toISOString(),
+                  // Simpan data ke Firebase
+                  const donationData = {
+                    name: name,
+                    email: email,
+                    phone: cleanedPhone,
+                    amount: selectedAmount,
+                    message: message,
+                    bencanaId: bencanaId,
+                    bencanaNama: bencanaNama,
+                    timestamp: new Date().getTime(),
+                    status: "success",
+                    transactionId: result.transaction_id,
+                  };
+
+                  database
+                    .ref("donations")
+                    .push(donationData)
+                    .then(() => {
+                      console.log("Donation saved to Firebase");
+                      paymentModal.hide();
+                      showSuccessMessage(name, selectedAmount, email);
+                    })
+                    .catch((error) => {
+                      console.error("Firebase save error:", error);
+                      paymentModal.hide();
+                      togglePaymentButton(false);
+                      alert("Gagal menyimpan data donasi: " + error.message);
                     });
-                  }
                 },
                 onPending: function (result) {
                   console.log("Payment pending", result);
-                  // Update status di Firebase
-                  updateDonationStatus("pending", result);
+                  paymentModal.hide();
+                  togglePaymentButton(false);
                   alert(
                     "Silakan selesaikan pembayaran Anda. Kami akan mengirimkan email konfirmasi setelah pembayaran berhasil."
                   );
-                  paymentModal.hide();
-                  resetPaymentButton();
                 },
                 onError: function (result) {
                   console.log("Payment error", result);
-                  // Update status di Firebase
-                  updateDonationStatus("failed", result);
+                  paymentModal.hide();
+                  togglePaymentButton(false);
                   alert(
                     "Pembayaran gagal. Silakan coba lagi atau gunakan metode pembayaran lain."
                   );
-                  paymentModal.hide();
-                  resetPaymentButton();
                 },
                 onClose: function () {
                   console.log("Popup ditutup tanpa pembayaran");
                   paymentModal.hide();
-                  resetPaymentButton();
+                  togglePaymentButton(false);
                 },
               });
             } catch (error) {
               console.error("Error:", error);
               alert("Terjadi kesalahan: " + error.message);
-              resetPaymentButton();
+              togglePaymentButton(false);
               paymentModal.hide();
             }
           });
       });
-
-      // Fungsi untuk update status donasi di Firebase
-      async function updateDonationStatus(status, result) {
-        if (!newDonationRef) return;
-
-        const updateData = {
-          status: status,
-          payment_method: result.payment_type || null,
-          transaction_id: result.transaction_id || null,
-          settlement_time: result.settlement_time || null,
-          updated_at: new Date().toISOString(),
-        };
-
-        try {
-          await newDonationRef.update(updateData);
-          console.log("Status updated in Firebase");
-        } catch (error) {
-          console.error("Failed to update Firebase:", error);
-        }
-      }
-
-      // Fungsi untuk toggle loading button
-      function togglePaymentButton(isLoading) {
-        const button = document.getElementById("payButton");
-        const spinner = document.getElementById("buttonSpinner");
-
-        button.disabled = isLoading;
-        spinner.classList.toggle("d-none", !isLoading);
-        document.getElementById("buttonText").textContent = isLoading
-          ? "Memproses..."
-          : "Lanjutkan Pembayaran";
-      }
-
-      // Fungsi untuk reset tombol pembayaran
-      function resetPaymentButton() {
-        const button = document.getElementById("payButton");
-        const spinner = document.getElementById("buttonSpinner");
-
-        if (button && spinner) {
-          button.disabled = false;
-          spinner.classList.add("d-none");
-          document.getElementById("buttonText").textContent =
-            "Lanjutkan Pembayaran";
-        }
-      }
-
-      // Fungsi untuk menampilkan pesan sukses
-      function showSuccessMessage(name, amount) {
-        const donationForm = document.getElementById("donationForm");
-        if (!donationForm) return;
-
-        donationForm.innerHTML = `
-        <div class="success-container">
-          <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="#28a745" class="bi bi-check-circle-fill mb-4" viewBox="0 0 16 16">
-            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-          </svg>
-          <h2 class="text-success mb-3">Terima Kasih, ${name}!</h2>
-          <p class="lead">Donasi sebesar <strong>${formatCurrency(
-            amount
-          )}</strong> berhasil diproses.</p>
-          <p class="mb-4">Kami telah mengirimkan email konfirmasi ke <strong>${
-            document.getElementById("email").value
-          }</strong>.</p>
-          <div class="d-grid gap-2">
-            <button onclick="window.location.reload()" class="btn btn-primary">Buat Donasi Lagi</button>
-            <a href="#" class="btn btn-outline-primary">Lihat Detail Transaksi</a>
-          </div>
-        </div>
-      `;
-      }
-
-      // Inisialisasi progress bar
-      updateDonationProgress();
-
-      // Set default amount
-      nominalButtons[0].click();
     </script>
   </body>
 </html>
