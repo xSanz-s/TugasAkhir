@@ -76,15 +76,15 @@
         class="d-flex justify-content-between align-item-center mt-3"
         id="keterangan">
         <div class="card-body">
-          <h2 class="card-text" id="namaBencana">Bantu Korban Banjir</h2>
+          <h2 class="card-text" id="namaBencana"></h2>
           <h5 class="card-text fw-medium">Dana Terkumpul:</h5>
           <h2 class="card-text text-danger">
-            Rp.<span id="danaTerkumpul">20.000.000</span>
+            Rp.<span id="danaTerkumpul"></span>
           </h2>
-          <p><span id="banyakDonatur">20</span> Donatur</p>
+          <p><span id="banyakDonatur"></span> Donatur</p>
         </div>
         <div class="text-muted flex-column pt-3 fs-sm-1">
-          <p id="tanggal">Tanggal 02 Juni 2025</p>
+          <p id="tanggal"></p>
         </div>
       </div>
       <a href="#" class="btn btn-primary rounded" id="btn-donasi"
@@ -237,7 +237,8 @@
 
             // Update UI dengan data bencana
             document.getElementById("namaBencana").textContent =
-              data.jenisBencana || "Bantu Korban Bencana";
+              `Bantu Korban Bencana ${data.jenisBencana}` ||
+              "Bantu Korban Bencana";
             document.getElementById("danaTerkumpul").textContent =
               data.danaTerkumpul
                 ? parseInt(data.danaTerkumpul).toLocaleString("id-ID")
@@ -245,7 +246,7 @@
             document.getElementById("banyakDonatur").textContent =
               data.banyakDonatur || "0";
             document.getElementById("tanggal").textContent = `Tanggal ${
-              data.tanggal || "02 Juni 2025"
+              data.tanggal || "0"
             }`;
 
             // Update gambar jika ada
